@@ -1,0 +1,73 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+	  xmlns:statistics="http://typo3.org/ns/CodingMs/ViewStatistics/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
+
+<f:layout name="Backend"/>
+
+<f:section name="content">
+	<h1><f:translate key="tx_viewstatistics_label.module_headline_list_for_user" /></h1>
+	<f:if condition="{frontendUser}">
+		<f:then>
+			<f:be.infobox title="Frontend-User: {frontendUser.firstName} {frontendUser.lastName} (username: {frontendUser.username})" state="-1">
+				<p><f:translate key="tx_viewstatistics_label.email"/>: {f:if(condition: frontendUser.email, then: frontendUser.email, else: '<i>no email given</i>')}</p>
+			</f:be.infobox>
+			<p><f:link.action action="listForUser" class="btn btn-default"><f:translate key="tx_viewstatistics_label.back_to_search"/></f:link.action></p>
+		</f:then>
+		<f:else>
+			<f:if condition="{notFound}">
+				<f:be.infobox state="1">Benutzer mit dieser UID wurde nicht gefunden.</f:be.infobox>
+			</f:if>
+			<div class="panel panel-default">
+				<div class="panel-heading"><f:translate key="tx_viewstatistics_label.filter_headline" /></div>
+				<div class="panel-body">
+					<f:form class="form-inline" action="listForUser">
+						<label>Benutzer suchen: </label>
+						<div class="form-group">
+							<f:form.textfield name="search[uid]"
+											  placeholder="{f:translate(key: 'tx_viewstatistics_label.placeholder_uid')}"
+											  value="{search.uid}"
+											  class="form-control"/>
+						</div>
+						<div class="form-group">
+							<f:form.textfield name="search[name]"
+											  placeholder="{f:translate(key: 'tx_viewstatistics_label.placeholder_name')}"
+											  value="{search.name}"
+											  class="form-control"/>
+						</div>
+						<div class="form-group">
+							<f:form.textfield name="search[email]"
+											  placeholder="{f:translate(key: 'tx_viewstatistics_label.placeholder_email')}"
+											  value="{search.email}"
+											  class="form-control"/>
+						</div>
+						<f:form.submit value="{f:translate(key: 'tx_viewstatistics_label.filter_submit_filter')}"
+									   name="search[submit]"
+									   class="btn btn-primary"/>
+					</f:form>
+				</div>
+			</div>
+		</f:else>
+	</f:if>
+
+	<f:if condition="{items -> f:count()} > 0">
+		<br />
+		<h4><f:count>{items}</f:count> Treffer</h4>
+		<f:if condition="{items -> f:count()} < 300">
+			<f:then>
+				<f:render partial="Table/Search/FrontendUser" section="Default" arguments="{items: items}"/>
+			</f:then>
+			<f:else>
+				<p>Zu viele Treffer, schränken Sie die Suche ein.</p>
+			</f:else>
+		</f:if>
+	</f:if>
+
+	<f:if condition="{tracks}">
+		<br />
+		<h4><f:translate key="tx_viewstatistics_label.headline_statistic_for_user"
+						 arguments="{0: '{f:count(subject: tracks)}'}" /></h4>
+		<f:render partial="TrackDataFull" section="Default" arguments="{tracks: tracks, showUserColumn: 1}"/>
+	</f:if>
+
+</f:section>

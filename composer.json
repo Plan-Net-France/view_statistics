@@ -1,0 +1,33 @@
+{
+  "name": "codingms/view-statistics",
+  "type": "typo3-cms-extension",
+  "description": "View frontend statistics Extension for TYPO3",
+  "version": "1.0.3",
+  "keywords": [
+    "TYPO3",
+    "extension",
+    "Statistics"
+  ],
+  "homepage": "https://www.coding.ms",
+  "require": {
+    "typo3/cms-core": ">=8.7.0,<9.6",
+    "ext-openssl": "*"
+  },
+  "authors": [
+    {
+      "name": "Thomas Deuling",
+      "role": "Developer",
+      "homepage": "https://www.coding.ms"
+    },
+    {
+      "name": "Natalia Postnikova",
+      "role": "Developer",
+      "homepage": "https://www.postnikova.de"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "CodingMs\\ViewStatistics\\": "Classes"
+    }
+  }
+}

@@ -1,0 +1,72 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+	  xmlns:statistics="http://typo3.org/ns/CodingMs/ViewStatistics/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
+
+<f:layout name="Backend"/>
+
+<f:section name="content">
+	<h1><f:translate key="tx_viewstatistics_label.module_headline_list" /></h1>
+	<f:flashMessages/>
+
+	<div class="panel panel-default">
+		<div class="panel-heading"><f:translate key="tx_viewstatistics_label.filter_headline" /></div>
+		<div class="panel-body">
+			<f:form>
+				<div class="form-group row">
+					<div class="col-sm-3">
+						<label for="tracks-mindate"><f:translate key="tx_viewstatistics_label.date_from"/></label>
+						<br />
+						<f:render partial="Field/Date" section="Default"
+								  arguments="{name: 'mindate', value: filter.mindate}"/>
+					</div>
+					<div class="col-sm-3">
+						<label for="tracks-maxdate"><f:translate key="tx_viewstatistics_label.date_to"/></label>
+						<br />
+						<f:render partial="Field/Date" section="Default"
+								  arguments="{name: 'maxdate', label: 'Datum bis', value: filter.maxdate}"/>
+					</div>
+					<div class="col-sm-3">
+						<label for="tracks-type"><f:translate key="tx_viewstatistics_label.type" /></label>
+						<br />
+						<f:form.select options="{typeOptions}"
+									   id="tracks-type"
+									   name="type"
+									   value="{filter.type}"
+									   class="form-control"
+									   prependOptionLabel="{f:translate(key: 'tx_viewstatistics_label.track_type_default')}"
+									   prependOptionValue=""/>
+					</div>
+					<div class="col-sm-3">
+						<label for="tracks-frontend-user"><f:translate key="tx_viewstatistics_label.frontend_user" /></label>
+						<br />
+						<f:form.select options="{frontendUserOptions}"
+									   id="tracks-frontend-user"
+									   name="frontendUser"
+									   value="{filter.frontendUser}"
+									   class="form-control"
+									   prependOptionLabel="{f:translate(key: 'tx_viewstatistics_label.frontend_user_type_default')}"
+									   prependOptionValue=""/>
+					</div>
+				</div>
+				<div class="form-group">
+					<f:link.action action="list" class="btn btn-default">
+						<f:translate key="tx_viewstatistics_label.filter_reset" />
+					</f:link.action>
+					<f:form.submit value="{f:translate(key: 'tx_viewstatistics_label.filter_submit_filter')}"
+								   class="btn btn-primary"/>
+				</div>
+			</f:form>
+		</div>
+	</div>
+
+	<f:if condition="{tracks}">
+		<br />
+		<h4><f:translate key="tx_viewstatistics_label.headline_statistic"
+						 arguments="{0: '{f:count(subject: tracks)}'}" /></h4>
+		<f:render partial="TrackDataFull"
+				  section="Default"
+				  arguments="{tracks: tracks, showUserColumn: showUserColumn, showIpAddressColumn: showIpAddressColumn}" />
+	</f:if>
+
+</f:section>

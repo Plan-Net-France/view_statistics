@@ -1,0 +1,136 @@
+config.tx_extbase.persistence.classes {
+    CodingMs\ViewStatistics\Domain\Model\Page {
+        mapping {
+            tableName = pages
+        }
+    }
+    CodingMs\ViewStatistics\Domain\Model\FrontendUser {
+        mapping {
+            tableName = fe_users
+        }
+    }
+    CodingMs\ViewStatistics\Domain\Model\Track {
+        mapping {
+            columns.crdate.mapOnProperty = creationDate
+        }
+    }
+}
+
+
+plugin.tx_viewstatistics {
+	settings {
+
+		# This is the type to object configuration
+		types {
+			sys_file {
+				# Label for select-boxes, table-header, ..
+				label = File
+				# Database field for title string
+				field = title
+				# Class of Repository
+				repository = TYPO3\CMS\Core\Resource\FileRepository
+				# Extension key
+				extensionKey = core
+			}
+			tx_news_domain_model_news {
+				# Label for select-boxes, table-header, ..
+				label = News
+				# Database field for title string
+				field = title
+				# Class of Repository
+				repository = GeorgRinger\News\Domain\Repository\NewsRepository
+				# Extension key
+				extensionKey = news
+			}
+			tx_shop_domain_model_product {
+				# Label for select-boxes, table-header, ..
+				label = Product
+				# Database field for title string
+				field = title
+				# Class of Repository
+				repository = CodingMs\Shop\Domain\Repository\ProductRepository
+				# Extension key
+				extensionKey = shop
+			}
+			tx_portfolios_domain_model_portfolio {
+				# Label for select-boxes, table-header, ..
+				label = Portfolio
+				# Database field for title string
+				field = title
+				# Class of Repository
+				repository = CodingMs\Portfolios\Domain\Repository\PortfolioRepository
+				# Extension key
+				extensionKey = portfolios
+			}
+		}
+
+		# This is the GET parameter to object configuration
+		objects {
+			// GET: tx_news_pi1[news]
+			tx_news_pi1 {
+				news {
+					# Label for select-boxes, table-header, ..
+					label = News
+					# Database table name
+					table = tx_news_domain_model_news
+					# Database field for title string
+					title = title
+				}
+			}
+			// GET: tx_downloadmanager_protecteddownload[file]
+			tx_downloadmanager_protecteddownload {
+				file {
+					# Label for select-boxes, table-header, ..
+					label = File
+					# Database table name
+					table = sys_file
+					# Database field for title string
+					title = title
+				}
+			}
+			// GET: tx_shop_tx_downloadmanager_publicdownload[file]
+			tx_downloadmanager_publicdownload {
+				file {
+					# Label for select-boxes, table-header, ..
+					label = File
+					# Database table name
+					table = sys_file
+					# Database field for title string
+					title = title
+				}
+			}
+			// GET: tx_shop_products[product]
+			tx_shop_products {
+				product {
+					# Label for select-boxes, table-header, ..
+					label = Product
+					# Database table name
+					table = tx_shop_domain_model_product
+					# Database field for title string
+					title = title
+				}
+			}
+			// GET: tx_shop_products[product]
+			tx_portfolios_portfolio {
+				portfolio {
+					# Label for select-boxes, table-header, ..
+					label = Portfolio
+					# Database table name
+					table = tx_portfolios_domain_model_portfolio
+					# Database field for title string
+					title = title
+				}
+			}
+
+			#openimmo {
+				# Label for select-boxes, table-header, ..
+				#label = Immobilie
+				# Database table name
+				#table = sys_file
+				# Database field for title string
+				#title = title
+			#}
+		}
+	}
+}
+module.tx_viewstatistics < plugin.tx_viewstatistics

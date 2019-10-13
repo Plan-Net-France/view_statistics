@@ -1,0 +1,45 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+	  xmlns:statistics="http://typo3.org/ns/CodingMs/ViewStatistics/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
+<f:section name="Default">
+
+	<table class="table table-striped table-hover">
+		<thead>
+		<tr>
+			<th class="col-uid"><f:translate key="tx_viewstatistics_label.unique_id"/></th>
+			<th class="col-title"><f:translate key="tx_viewstatistics_label.title"/></th>
+			<th class="col-breadcrumb"><f:translate key="tx_viewstatistics_label.breadcrumb"/></th>
+			<th class="col-action"><f:translate key="tx_viewstatistics_label.action"/></th>
+		</tr>
+		</thead>
+		<f:for each="{items}" as="item">
+			<tr>
+				<td>
+					<f:link.action action="listForPage" arguments="{uid: item.uid}">{item.uid}</f:link.action>
+				</td>
+				<td>
+					<f:link.action action="listForPage" arguments="{uid: item.uid}">{item.title}</f:link.action>
+				</td>
+				<td>
+					<nobr>
+						<f:link.action action="listForPage" arguments="{uid: item.uid}">
+							<statistics:page.rootline pageUid="{item.uid}" as="rootline" />
+							<f:for each="{rootline -> statistics:iterator.sort()}" as="rootlineItem" iteration="i">
+								<f:if condition="{i.index} > 0"> &gt;</f:if>
+								{rootlineItem.title}
+							</f:for>
+						</f:link.action>
+					</nobr>
+				</td>
+				<td>
+					<f:link.action action="listForPage" arguments="{uid: item.uid}">
+						<core:icon identifier="actions-document-view" size="small"/>
+					</f:link.action>
+				</td>
+			</tr>
+		</f:for>
+	</table>
+	<p class="pull-right">[by table\search\page]</p>
+
+</f:section>

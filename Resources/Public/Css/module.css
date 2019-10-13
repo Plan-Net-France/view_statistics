@@ -1,0 +1,58 @@
+.typo3-view-statistics-module .table {
+    table-layout: fixed;
+}
+
+.typo3-view-statistics-module .table .col-title {
+    min-width: 100px;
+    /* width: auto; is important, because of that's defined by TYPO3's stylesheets */
+    width: auto;
+}
+.typo3-view-statistics-module .table .col-login-duration {
+    min-width: 90px;
+}
+.typo3-view-statistics-module .table .col-action {
+    width: auto;
+}
+.typo3-view-statistics-module .table .col-date {
+    min-width: 110px;
+}
+.typo3-view-statistics-module .table .col-frontend-user {
+    min-width: 160px;
+}
+.typo3-view-statistics-module .table .col-uid {
+    width: 40px;
+}
+.typo3-view-statistics-module .table .col-username {
+    min-width: 120px;
+}
+.typo3-view-statistics-module .table .col-type {
+    min-width: 80px;
+}
+.typo3-view-statistics-module .table .col-name {
+    min-width: 160px;
+}
+.typo3-view-statistics-module .table .col-email {
+    min-width: 120px;
+}
+.typo3-view-statistics-module .table .col-page {
+    min-width: 120px;
+}
+.typo3-view-statistics-module .table .col-referrer {
+    word-wrap: break-word;
+}
+.typo3-view-statistics-module .table .col-object {
+    min-width: 200px;
+    word-wrap: break-word;
+}
+.typo3-view-statistics-module .table .col-breadcrumb {
+    min-width: 120px;
+}
+.typo3-view-statistics-module .table .col-page-view-summary {
+    min-width: 120px;
+}
+.typo3-view-statistics-module .table .col-page-view-by-date {
+    min-width: 120px;
+}
+.typo3-view-statistics-module .table .col-page-view-by-frontend-user {
+    width: auto;
+}

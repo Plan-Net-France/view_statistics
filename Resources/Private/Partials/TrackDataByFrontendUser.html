@@ -1,0 +1,54 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+	  xmlns:statistics="http://typo3.org/ns/CodingMs/ViewStatistics/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
+<f:section name="Default">
+
+	<br />
+	<h4><f:translate key="tx_viewstatistics_label.headline_statistic_by_user"
+					 arguments="{0: '{f:count(subject: data)}'}" /></h4>
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th class="col-uid"><f:translate key="tx_viewstatistics_label.unique_id"/></th>
+				<th class="col-username"><f:translate key="tx_viewstatistics_label.username"/></th>
+				<th class="col-email"><f:translate key="tx_viewstatistics_label.email"/></th>
+				<th class="col-page-view-summary"><f:translate key="tx_viewstatistics_label.page_view_summary"/></th>
+				<f:comment>
+					<th class="col-page-view-by-date"><f:translate key="tx_viewstatistics_label.page_view_by_date"/></th>
+				</f:comment>
+				<th class="col-action"><f:translate key="tx_viewstatistics_label.action"/></th>
+			</tr>
+		</thead>
+		<tbody>
+			<f:for each="{data}" as="row">
+				<tr>
+					<td>{row.uid}</td>
+					<td>{row.username}
+						<f:if condition="{row.showlink}">
+							<f:link.action action="listForUser"
+										   arguments="{uid: row.uid}"
+										   title="{f:translate(key: 'tx_viewstatistics_label.show_list_for_user')}">
+								<i class="fa fa-line-chart" aria-hidden="true"></i>
+							</f:link.action>
+						</f:if>
+					</td>
+					<td>{row.email}</td>
+					<td>{row.total}</td>
+					<f:comment>
+						<td><statistics:iterator.implode content="{row.date}" glue=", " /></td>
+					</f:comment>
+					<td>
+						<f:link.action action="listForUser"
+									   arguments="{uid: row.uid}"
+									   title="{f:translate(key: 'tx_viewstatistics_label.show_list_for_user')}">
+							<core:icon identifier="actions-document-view" size="small"/>
+						</f:link.action>
+					</td>
+				</tr>
+			</f:for>
+		</tbody>
+	</table>
+	<p class="pull-right">[by trackDataByFrontendUser]</p>
+
+</f:section>

@@ -1,0 +1,84 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+	  xmlns:statistics="http://typo3.org/ns/CodingMs/ViewStatistics/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
+
+<f:layout name="Backend"/>
+
+<f:section name="content">
+	<h1><f:translate key="tx_viewstatistics_label.module_headline_list_for_page" /></h1>
+	<f:if condition="{page}">
+		<f:then>
+			<f:be.infobox title="{page.title}" state="-1">
+				<p>
+					<b>Breadcrumb:</b>
+					<statistics:page.rootline pageUid="{page.uid}" as="rootline" />
+					<f:for each="{rootline -> statistics:iterator.sort()}" as="rootlineItem" iteration="i">
+						<f:if condition="{i.index} > 0"> &gt;</f:if>
+						{rootlineItem.title}
+					</f:for>
+				</p>
+				<p>
+					Insgesamt {count} Tracking-Einträge.
+					<f:if condition="{count} > 50000">
+						Es werden nur die letzten 50000 berücksichtigt.
+					</f:if>
+				</p>
+			</f:be.infobox>
+			<p>
+				<f:link.action action="listForPage" class="btn btn-default"><f:translate key="tx_viewstatistics_label.back_to_search"/></f:link.action>
+			</p>
+		</f:then>
+		<f:else>
+			<f:if condition="{notFound}">
+				<f:be.infobox state="1">Seite mit dieser UID wurde nicht gefunden.</f:be.infobox>
+			</f:if>
+			<div class="panel panel-default">
+				<div class="panel-heading"><f:translate key="tx_viewstatistics_label.filter_headline" /></div>
+				<div class="panel-body">
+					<f:form class="form-inline" action="listForPage">
+						<label>Seite suchen</label>
+						<div class="form-group">
+							<f:form.textfield name="search[uid]"
+											  placeholder="{f:translate(key: 'tx_viewstatistics_label.placeholder_uid')}"
+											  value="{search.uid}"
+											  class="form-control"/>
+						</div>
+						<div class="form-group">
+							<f:form.textfield name="search[title]"
+											  placeholder="{f:translate(key: 'tx_viewstatistics_label.placeholder_title')}"
+											  value="{search.title}"
+											  class="form-control"/>
+						</div>
+						<f:form.submit value="{f:translate(key: 'tx_viewstatistics_label.filter_submit_filter')}"
+									   class="btn btn-primary"
+									   name="search[submit]"/>
+					</f:form>
+				</div>
+			</div>
+		</f:else>
+	</f:if>
+
+	<f:if condition="{items -> f:count()} > 0">
+		<br />
+		<h4><f:count>{items}</f:count> Treffer</h4>
+		<f:if condition="{items -> f:count()} < 500">
+			<f:then>
+				<f:render partial="Table/Search/Page" section="Default" arguments="{items: items}" />
+			</f:then>
+			<f:else>
+				<p>Zu viele Treffer, schränken Sie die Suche ein.</p>
+			</f:else>
+		</f:if>
+	</f:if>
+
+	<f:if condition="{dataByDate}">
+		<f:render partial="TrackDataByDate" section="Default" arguments="{data: dataByDate}"/>
+	</f:if>
+	<f:if condition="{dataByFrontendUser}">
+		<f:render partial="TrackDataByFrontendUser" section="Default" arguments="{data: dataByFrontendUser}"/>
+	</f:if>
+	<f:comment><!--
+        <f:render partial="TrackDataChart" arguments="{dataByDate: dataByDate, dataByFrontendUser: dataByFrontendUser}" />
+    --></f:comment>
+</f:section>

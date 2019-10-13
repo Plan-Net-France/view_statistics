@@ -1,0 +1,30 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+	  xmlns:statistics="http://typo3.org/ns/CodingMs/ViewStatistics/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
+<f:section name="Default">
+
+	<br />
+	<h4><f:translate key="tx_viewstatistics_label.headline_statistic_by_date"
+					 arguments="{0: '{f:count(subject: data)}'}" /></h4>
+	<table class="table table-striped table-hover">
+		<thead>
+		<tr>
+			<th class="col-date"><f:translate key="tx_viewstatistics_label.date"/></th>
+			<th class="col-page-view-summary"><f:translate key="tx_viewstatistics_label.page_view_summary"/></th>
+			<th class="col-page-view-by-frontend-user"><f:translate key="tx_viewstatistics_label.page_view_by_frontend_user"/></th>
+		</tr>
+		</thead>
+		<tbody>
+			<f:for each="{data}" as="row">
+				<tr>
+					<td class="col-date">{row.label}</td>
+					<td>{row.total}</td>
+					<td>{row.frontend_user}</td>
+				</tr>
+			</f:for>
+		</tbody>
+	</table>
+	<p class="pull-right">[by trackDataByDate]</p>
+
+</f:section>

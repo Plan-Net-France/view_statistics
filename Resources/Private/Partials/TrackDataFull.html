@@ -1,0 +1,110 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+	  xmlns:statistics="http://typo3.org/ns/CodingMs/ViewStatistics/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
+
+<f:section name="Default">
+	<f:if condition="{tracks}">
+		<f:be.widget.paginate objects="{tracks}" as="paginatedTracks" configuration="{itemsPerPage: 50, insertBelow: 1}">
+			<table data-table="tx_viewstatistics_domain_model_track"
+				   class="table table-striped table-hover">
+				<thead>
+				<tr>
+					<th class="col-date"><f:translate key="tx_viewstatistics_label.date"/></th>
+					<th class="col-type"><f:translate key="tx_viewstatistics_label.type"/></th>
+					<f:if condition="{showIpAddressColumn}">
+						<th class="col-ip-address"><f:translate key="tx_viewstatistics_label.ip_address"/></th>
+					</f:if>
+					<f:if condition="{showUserColumn}">
+						<th class="col-frontend-user"><f:translate key="tx_viewstatistics_label.frontend_user"/></th>
+						<th class="col-login-duration"><f:translate key="tx_viewstatistics_label.login_duration"/></th>
+					</f:if>
+					<th class="col-page"><f:translate key="tx_viewstatistics_label.page"/></th>
+					<th class="col-referrer"><f:translate key="tx_viewstatistics_label.referrer"/></th>
+					<th class="col-user-agent"><f:translate key="tx_viewstatistics_label.user_agent"/></th>
+					<th class="col-object"><f:translate key="tx_viewstatistics_label.object"/></th>
+					<th class="col-action"><f:translate key="tx_viewstatistics_label.action"/></th>
+				</tr>
+				</thead>
+				<f:for each="{paginatedTracks}" as="track">
+					<tr>
+						<td class="col-date">
+							<f:format.date format="d.m.Y H:i">{track.creationDate}</f:format.date>
+						</td>
+						<td class="col-action">
+							<statistics:variable.set name="actionKey" value="tx_viewstatistics_label.track_type_{track.action}" />
+							<f:translate key="{actionKey}" />
+						</td>
+						<f:if condition="{showIpAddressColumn}">
+							<td class="col-ip-address">
+								<nobr>{track.ipAddress}</nobr>
+							</td>
+						</f:if>
+						<f:if condition="{showUserColumn}">
+							<td class="col-frontend-user">
+								<f:if condition="{track.frontendUser}">
+									<f:then>
+										<span title="{track.frontendUser.username} [{track.frontendUser.uid}]">{track.frontendUser.username}</span>
+										<f:link.action action="listForUser" arguments="{uid: track.frontendUser.uid}"
+													   title="Auflistung für Benutzer">
+											<i class="fa fa-line-chart" aria-hidden="true"></i>
+										</f:link.action>
+									</f:then>
+									<f:else><f:translate key="tx_viewstatistics_label.anonym_or_deleted"/></f:else>
+								</f:if>
+							</td>
+							<td class="col-login-duration">
+								<statistics:format.loginDuration loginDuration="{track.loginDuration}" />
+							</td>
+						</f:if>
+						<td>
+							<f:if condition="{track.page}">
+								<span title="{track.page.title} [{track.page.uid}]">{track.page.title}</span>
+								<f:if condition="{track.notDetailPage}">
+									<f:link.action action="listForPage" arguments="{uid: track.page.uid}"
+												   title="Auflistung für Seite">
+										<i class="fa fa-line-chart" aria-hidden="true"></i>
+									</f:link.action> [{track.page.uid}]
+									<!-- @todo Frontend-Link für diese Seite -->
+								</f:if>
+							</f:if>
+						</td>
+						<td class="col-referrer">
+							<f:if condition="{track.referrer}">
+								<a href="{track.referrer}" target="_blank" title="Open referrer in new tab">{track.referrer}</a>
+							</f:if>
+						</td>
+						<td class="col-user-agent">
+							<f:if condition="{track.userAgent}">
+								{track.userAgent}
+							</f:if>
+						</td>
+						<td style="width: auto">
+							<f:if condition="{track.objectUid}">
+								{statistics:variable.get(name: 'settings.types.{track.objectType}.label')}:
+								<statistics:objectLabel table="{track.objectType}"
+														uid="{track.objectUid}"
+														field="{statistics:variable.get(name: 'settings.types.{track.objectType}.field')}" />
+								[{track.objectUid}]
+								<f:link.action action="listForObject"
+											   arguments="{type: track.objectType, uid: track.objectUid}"
+											   title="Auflistung für Object">
+									<i class="fa fa-line-chart" aria-hidden="true"></i>
+								</f:link.action>
+							</f:if>
+						</td>
+						<td>
+							<statistics:be.editLink table="tx_viewstatistics_domain_model_track" uid="{track.uid}"
+													action="edit"
+													title="Track-Eintrag bearbeiten [{track.uid}]">
+								<core:icon identifier="actions-document-open" size="small"/>
+							</statistics:be.editLink>
+						</td>
+					</tr>
+				</f:for>
+			</table>
+		</f:be.widget.paginate>
+	</f:if>
+	<p class="pull-right">[by trackDataFull]</p>
+
+</f:section>

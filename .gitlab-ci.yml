@@ -1,0 +1,17 @@
+#
+# Version 1.0.0
+stages:
+  - buildAndPublish
+
+Build and publish archive:
+  stage: buildAndPublish
+  image: alpine:3.9
+  before_script:
+    - apk update && apk add zip lftp curl
+  script:
+    - echo "{\"CI_COMMIT_TAG\":\"${CI_COMMIT_TAG}\", \"CI_PROJECT_NAME\":\"${CI_PROJECT_NAME}\", \"CI_COMMIT_TITLE\":\"${CI_COMMIT_TITLE}\", \"CI_COMMIT_REF_NAME\":\"${CI_COMMIT_REF_NAME}\"}" >> "../view_statistics_${CI_COMMIT_TAG}.json"
+    - zip -r "../view_statistics_${CI_COMMIT_TAG}.zip" . -x "*.git*" ".gitlab-ci.yml"
+    - cp ./composer.json "../view_statistics_composer_${CI_COMMIT_TAG}.json"
+    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST/view_statistics/packages/; put -a ../view_statistics_${CI_COMMIT_TAG}.zip ../view_statistics_${CI_COMMIT_TAG}.json ../view_statistics_composer_${CI_COMMIT_TAG}.json"
+  only:
+    - tags

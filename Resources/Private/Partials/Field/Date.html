@@ -1,0 +1,20 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+	  xmlns:statistics="http://typo3.org/ns/CodingMs/ViewStatistics/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
+<f:section name="Default">
+
+	<div class="input-group">
+		<f:form.textfield id="tracks-{name}"
+						  name="{name}"
+						  value="{value}"
+						  class="form-control t3js-datetimepicker"
+						  data="{date-type: 'date', date-offset: '0'}"/>
+		<span class="input-group-btn">
+			<label class="btn btn-default" for="tracks-{name}">
+				<span class="fa fa-calendar"></span>
+			</label>
+		</span>
+	</div>
+
+</f:section>

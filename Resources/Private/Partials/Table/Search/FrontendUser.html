@@ -1,0 +1,43 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+	  xmlns:statistics="http://typo3.org/ns/CodingMs/ViewStatistics/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
+<f:section name="Default">
+
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th class="col-uid"><f:translate key="tx_viewstatistics_label.unique_id"/></th>
+				<th class="col-username"><f:translate key="tx_viewstatistics_label.username"/></th>
+				<th class="col-name"><f:translate key="tx_viewstatistics_label.name"/></th>
+				<th class="col-email"><f:translate key="tx_viewstatistics_label.email"/></th>
+				<th class="col-action"><f:translate key="tx_viewstatistics_label.action"/></th>
+			</tr>
+		</thead>
+		<tbody>
+			<f:for each="{items}" as="item">
+				<tr>
+					<td>
+						<f:link.action action="listForUser" arguments="{uid: item.uid}">{item.uid}</f:link.action>
+					</td>
+					<td>
+						<f:link.action action="listForUser" arguments="{uid: item.uid}">{item.username}</f:link.action>
+					</td>
+					<td>
+						<f:link.action action="listForUser" arguments="{uid: item.uid}">{item.firstName} {item.lastName}</f:link.action>
+					</td>
+					<td>
+						<f:link.action action="listForUser" arguments="{uid: item.uid}">{item.email}</f:link.action>
+					</td>
+					<td>
+						<f:link.action action="listForUser" arguments="{uid: item.uid}">
+							<core:icon identifier="actions-document-view" size="small"/>
+						</f:link.action>
+					</td>
+				</tr>
+			</f:for>
+		</tbody>
+	</table>
+	<p class="pull-right">[by table\search\frontendUser]</p>
+
+</f:section>
