@@ -15,6 +15,12 @@
 
 
 
+## 2020-05-27 Release of Version 1.0.4
+
+*   [TASK] Cleanup Change-Log
+
+
+
 ## 2019-10-13  Release of version 1.0.3
 
 *	[TASK] Add Gitlab-CI configuration.
