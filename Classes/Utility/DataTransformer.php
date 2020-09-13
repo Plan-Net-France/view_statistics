@@ -2,8 +2,34 @@
 
 namespace CodingMs\ViewStatistics\Utility;
 
+/***************************************************************
+ *
+ * Copyright notice
+ *
+ * (c) 2020 Thomas Deuling <typo3@coding.ms>
+ *
+ * All rights reserved
+ *
+ * This script is part of the TYPO3 project. The TYPO3 project is
+ * free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * The GNU General Public License can be found at
+ * http://www.gnu.org/copyleft/gpl.html.
+ *
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
 use CodingMs\ViewStatistics\Domain\Repository\FrontendUserRepository;
-use \CodingMs\ViewStatistics\Domain\Model\FrontendUser;
+use CodingMs\ViewStatistics\Domain\Model\FrontendUser;
+use Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -16,7 +42,9 @@ class DataTransformer
 
     /**
      * @param array $tracks
-     * @throws \Exception
+     * @param string $type
+     * @return mixed
+     * @throws Exception
      */
     public static function transform($tracks, $type)
     {
@@ -24,10 +52,14 @@ class DataTransformer
         if (method_exists(__CLASS__, $functionName)) {
             return self::$functionName($tracks);
         }
-        throw new \Exception('Funktion ' . $functionName . ' existiert nicht');
+        throw new Exception('Funktion ' . $functionName . ' existiert nicht');
     }
 
-    public static function transformDay($tracks)
+    /**
+     * @param $tracks
+     * @return array
+     */
+    public static function transformDay(array $tracks)
     {
         $data = [];
         foreach ($tracks as $track) {
@@ -47,7 +79,11 @@ class DataTransformer
         return $data;
     }
 
-    public static function transformFeuser($tracks)
+    /**
+     * @param $tracks
+     * @return array
+     */
+    public static function transformFeuser(array $tracks)
     {
         $data = [];
         /** @var ObjectManager $objectManager */
@@ -73,9 +109,9 @@ class DataTransformer
                     } else {
                         $data[$key] = [
                             'uid' => $track['frontend_user'],
-                            'username' => '[deleted, uid:'.$track['frontend_user'].']',
-                            'name' => '[deleted, uid:'.$track['frontend_user'].']',
-                            'email' => '[deleted, uid:'.$track['frontend_user'].']',
+                            'username' => '[deleted, uid:' . $track['frontend_user'] . ']',
+                            'name' => '[deleted, uid:' . $track['frontend_user'] . ']',
+                            'email' => '[deleted, uid:' . $track['frontend_user'] . ']',
                             'showlink' => 0,
                             'total' => 0,
                             'date' => [],

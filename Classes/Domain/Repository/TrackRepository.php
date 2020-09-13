@@ -2,39 +2,42 @@
 
 namespace CodingMs\ViewStatistics\Domain\Repository;
 
-
 /***************************************************************
  *
- *  Copyright notice
+ * Copyright notice
  *
- *  (c) 2017 Natalia Postnikova <natalia@postnikova.de>
+ * (c) 2020 Thomas Deuling <typo3@coding.ms>
  *
- *  All rights reserved
+ * All rights reserved
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * This script is part of the TYPO3 project. The TYPO3 project is
+ * free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
+ * The GNU General Public License can be found at
+ * http://www.gnu.org/copyleft/gpl.html.
  *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  This copyright notice MUST APPEAR in all copies of the script!
+ * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use CodingMs\ViewStatistics\Domain\Model\FrontendUser;
-use \TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * The repository for Track
  */
-class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class TrackRepository extends Repository
 {
 
     /**
@@ -52,21 +55,23 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * @param $isAdmin
      */
-    public function setIsAdmin($isAdmin) {
+    public function setIsAdmin($isAdmin)
+    {
         $this->isAdmin = $isAdmin;
     }
 
     /**
-     * @param $accessiblePages array
+     * @param array $accessiblePages
      */
-    public function setAccessiblePages($accessiblePages) {
+    public function setAccessiblePages(array $accessiblePages = [])
+    {
         $this->accessiblePages = $accessiblePages;
     }
 
     public function initializeObject()
     {
-        /** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings */
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
+        /** @var $querySettings Typo3QuerySettings */
+        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
         $querySettings->setRespectStoragePage(false);
         $this->setDefaultQuerySettings($querySettings);
     }
@@ -79,9 +84,11 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param string $sortingOrder
      * @param null $dateFrom
      * @param null $dateTo
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
+     * @throws InvalidQueryException
      */
-    public function findAll($sortingField = 'crdate', $sortingOrder = QueryInterface::ORDER_DESCENDING, $dateFrom = null, $dateTo = null) {
+    public function findAll($sortingField = 'crdate', $sortingOrder = QueryInterface::ORDER_DESCENDING, $dateFrom = null, $dateTo = null)
+    {
         $query = $this->createQuery();
         $orderings = [
             $sortingField => $sortingOrder,
@@ -92,8 +99,7 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $query->matching($query->in('page', $this->accessiblePages));
         }
         $query->setOrderings($orderings);
-        $result = $query->execute();
-        return $result;
+        return $query->execute();
     }
 
     /**
@@ -103,6 +109,7 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param string $type What kind of tracking data should be found
      * @param int $pageUid
      * @return int
+     * @throws InvalidQueryException
      */
     public function countByTypeAndUid($type, $pageUid)
     {
@@ -114,20 +121,20 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         //
         $whereParts = [];
         // Page uid
-       // if($pageUid > 0) {
-       //     $whereParts[] = $query->equals('page', $pageUid);
-       // }
+        // if($pageUid > 0) {
+        //     $whereParts[] = $query->equals('page', $pageUid);
+        // }
         // Type
-        switch($type) {
+        switch ($type) {
             case 'pageview':
                 $whereParts[] = $query->equals('action', 'pageview');
-                if($pageUid > 0) {
+                if ($pageUid > 0) {
                     $whereParts[] = $query->equals('page', $pageUid);
                 }
                 break;
             case 'login':
                 $whereParts[] = $query->equals('action', 'login');
-                if($pageUid > 0) {
+                if ($pageUid > 0) {
                     $whereParts[] = $query->equals('page', $pageUid);
                 }
                 break;
@@ -142,15 +149,13 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $whereParts[] = $query->in('page', $this->accessiblePages);
         }
         //
-        if(count($whereParts) == 1) {
+        if (count($whereParts) === 1) {
             $query->matching($whereParts[0]);
-        }
-        else {
+        } else {
             $query->matching($query->logicalAnd($whereParts));
         }
         $query->setOrderings($orderings);
-        $result = $query->execute()->count();
-        return $result;
+        return $query->execute()->count();
     }
 
     /**
@@ -159,7 +164,8 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param string $type What kind of tracking data should be found
      * @param int $pageUid
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
+     * @throws InvalidQueryException
      */
     public function findByTypeAndUid($type, $pageUid)
     {
@@ -172,19 +178,19 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $whereParts = [];
         // Page uid
         //if($pageUid > 0) {
-           // $whereParts[] = $query->equals('page', $pageUid);
+        // $whereParts[] = $query->equals('page', $pageUid);
         //}
         // Type
-        switch($type) {
+        switch ($type) {
             case 'pageview':
                 $whereParts[] = $query->equals('action', 'pageview');
-                if($pageUid > 0) {
+                if ($pageUid > 0) {
                     $whereParts[] = $query->equals('page', $pageUid);
                 }
                 break;
             case 'login':
                 $whereParts[] = $query->equals('action', 'login');
-                if($pageUid > 0) {
+                if ($pageUid > 0) {
                     $whereParts[] = $query->equals('page', $pageUid);
                 }
                 break;
@@ -199,10 +205,9 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $whereParts[] = $query->in('page', $this->accessiblePages);
         }
         //
-        if(count($whereParts) == 1) {
+        if (count($whereParts) === 1) {
             $query->matching($whereParts[0]);
-        }
-        else {
+        } else {
             $query->matching($query->logicalAnd($whereParts));
         }
         $query->setOrderings($orderings);
@@ -216,7 +221,8 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Respects editor authorizations.
      *
      * @param FrontendUser $frontendUser
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
+     * @throws InvalidQueryException
      */
     public function findByFrontendUser($frontendUser)
     {
@@ -233,10 +239,9 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $whereParts[] = $query->in('page', $this->accessiblePages);
         }
         //
-        if(count($whereParts) == 1) {
+        if (count($whereParts) === 1) {
             $query->matching($whereParts[0]);
-        }
-        else {
+        } else {
             $query->matching($query->logicalAnd($whereParts));
         }
         $query->setOrderings($ordering);
@@ -250,10 +255,11 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param array $filter
      * @param string $sortingField
-     * @param \TYPO3\CMS\Extbase\Persistence\QueryInterface $sortingOrder
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @param QueryInterface $sortingOrder
+     * @return array|QueryResultInterface
+     * @throws InvalidQueryException
      */
-    public function findAllFiltered($filter, $sortingField='crdate', $sortingOrder=QueryInterface::ORDER_DESCENDING)
+    public function findAllFiltered($filter, $sortingField = 'crdate', $sortingOrder = QueryInterface::ORDER_DESCENDING)
     {
         $query = $this->createQuery();
         $whereParts = [];
@@ -310,54 +316,6 @@ class TrackRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->setOrderings($orderings);
         $result = $query->execute();
         return $result;
-    }
-
-    public function findTopNews($pid, $limit, $feuser)
-    {
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
-        $db = $GLOBALS['TYPO3_DB'];
-
-        $where = 'news > 0 AND t.news = n.uid AND n.pid = ' . $pid;
-        if ($feuser == 0) {
-            $where .= ' AND feuser = 0';
-        } else {
-            if ($feuser > 0) {
-                $where .= ' AND feuser > 0';
-            }
-        }
-        $rows = $db->exec_SELECTgetRows(
-            'n.uid, n.pid, n.title, n.teaser, count(*) AS count', // fields
-            'tx_viewstatistics_domain_model_track AS t, tx_news_domain_model_news AS n', // from
-            $where,
-            'news', // news
-            'count DESC',
-            $limit
-        );
-        return $rows;
-    }
-
-    public function findTopPages($limit, $mindate, $maxdate)
-    {
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
-        $db = $GLOBALS['TYPO3_DB'];
-
-        $where = 't.page = p.uid AND page > 0 AND news = 0 AND indication = 0 AND illness = 0';
-        if (isset($mindate)) {
-            $where .= ' AND crdate > ' . $mindate;
-        }
-        if (isset($maxdate)) {
-            $where .= ' AND crdate < ' . $maxdate;
-        }
-
-        $rows = $db->exec_SELECTgetRows(
-            'p.uid, p.title, count(*) AS count', // fields
-            'tx_viewstatistics_domain_model_track AS t, pages AS p', // from
-            $where,
-            'page', // news
-            'count DESC',
-            $limit
-        );
-        return $rows;
     }
 
 }

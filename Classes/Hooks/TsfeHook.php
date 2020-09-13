@@ -2,9 +2,36 @@
 
 namespace CodingMs\ViewStatistics\Hooks;
 
+/***************************************************************
+ *
+ * Copyright notice
+ *
+ * (c) 2020 Thomas Deuling <typo3@coding.ms>
+ *
+ * All rights reserved
+ *
+ * This script is part of the TYPO3 project. The TYPO3 project is
+ * free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * The GNU General Public License can be found at
+ * http://www.gnu.org/copyleft/gpl.html.
+ *
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use PDO;
 
 /**
  * @package TYPO3
@@ -68,7 +95,7 @@ class TsfeHook
         }
         //
         // Track logout
-        //if (GeneralUtility::_GP('logintype') == 'logout') {
+        //if (GeneralUtility::_GP('logintype') === 'logout') {
             // Track Logout
             // ..is not possible, because the frontend user is already unset
             // when we start tracking this!
@@ -110,7 +137,7 @@ class TsfeHook
         }
         //
         // Track user login/logout/page view
-        if (GeneralUtility::_GP('logintype') == 'login') {
+        if (GeneralUtility::_GP('logintype') === 'login') {
             // Track Login
             $this->trackLogin($fields, $extensionConfiguration);
         } else {
@@ -120,73 +147,82 @@ class TsfeHook
     }
 
     /**
-     * @param $frontendUser
-     * @param $loginDuration
+     * @param int $frontendUser
+     * @param int $loginDuration
      */
-    protected function updateLoginDuration($frontendUser, $loginDuration) {
-        $table = 'tx_viewstatistics_domain_model_track';
-        $field = [
-            'login_duration' => (int)$loginDuration
-        ];
-        $where = 'frontend_user = ' . (int)$frontendUser . ' AND action=\'login\' ';
-        $where .= 'ORDER BY crdate DESC LIMIT 1';
-        $this->getDb()->exec_UPDATEquery($table, $where, $field);
+    protected function updateLoginDuration(int $frontendUser, int $loginDuration) {
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_viewstatistics_domain_model_track');
+        $queryBuilder->update('tx_viewstatistics_domain_model_track')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'frontend_user',
+                    $queryBuilder->createNamedParameter((int)$frontendUser, PDO::PARAM_INT)
+                )
+            )
+            ->andWhere('action="login"')
+            ->set('login_duration', (int)$loginDuration)
+            ->orderBy('crdate')
+            ->setMaxResults(1)
+            ->execute();
     }
 
     /**
      * @param array $fields
      * @param array $configuration
      */
-    protected function trackLogin($fields, $configuration)
+    protected function trackLogin(array $fields, array$configuration)
     {
-        $table = 'tx_viewstatistics_domain_model_track';
         $fields['action'] = 'login';
         if((bool)$configuration['track.']['trackIpAddress']) {
             $fields['ip_address'] = GeneralUtility::getIndpEnv('REMOTE_ADDR');
         }
         $fields['tstamp'] = $GLOBALS['SIM_EXEC_TIME'];
         $fields['crdate'] = $GLOBALS['SIM_EXEC_TIME'];
-        $this->getDb()->exec_INSERTquery($table, $fields);
+        $this->insertRecord($fields);
     }
 
     /**
      * @param array $fields
      * @param array $configuration
      */
-    protected function trackPageview($fields, $configuration)
+    protected function trackPageview(array $fields, array $configuration)
     {
-        $table = 'tx_viewstatistics_domain_model_track';
         $fields['action'] = 'pageview';
         if((bool)$configuration['track.']['trackIpAddress']) {
             $fields['ip_address'] = GeneralUtility::getIndpEnv('REMOTE_ADDR');
         }
         $fields['tstamp'] = $GLOBALS['SIM_EXEC_TIME'];
         $fields['crdate'] = $GLOBALS['SIM_EXEC_TIME'];
-        $this->getDb()->exec_INSERTquery($table, $fields);
+        $this->insertRecord($fields);
     }
 
     /**
      * @param array $fields
      * @param array $configuration
      */
-    protected function trackLogout($fields, $configuration)
+    protected function trackLogout(array $fields, array $configuration)
     {
-        $table = 'tx_viewstatistics_domain_model_track';
         $fields['action'] = 'logout';
         if((bool)$configuration['track.']['trackIpAddress']) {
             $fields['ip_address'] = GeneralUtility::getIndpEnv('REMOTE_ADDR');
         }
         $fields['tstamp'] = $GLOBALS['SIM_EXEC_TIME'];
         $fields['crdate'] = $GLOBALS['SIM_EXEC_TIME'];
-        $this->getDb()->exec_INSERTquery($table, $fields);
+        $this->insertRecord($fields);
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @param array $fields
      */
-    protected function getDb()
-    {
-        return $GLOBALS['TYPO3_DB'];
+    protected function insertRecord(array $fields) {
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_viewstatistics_domain_model_track');
+        $queryBuilder->insert('tx_viewstatistics_domain_model_track')
+            ->values($fields)
+            ->execute();
     }
 
 }

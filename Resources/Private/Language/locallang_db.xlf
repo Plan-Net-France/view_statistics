@@ -42,6 +42,9 @@
 			<trans-unit id="tx_viewstatistics_domain_model_track.referrer">
 				<source>Referrer</source>
 			</trans-unit>
+			<trans-unit id="tx_viewstatistics_domain_model_track.user_agent">
+				<source>User agent</source>
+			</trans-unit>
 			<trans-unit id="tx_viewstatistics_domain_model_track.object_uid">
 				<source>Object-Uid</source>
 			</trans-unit>

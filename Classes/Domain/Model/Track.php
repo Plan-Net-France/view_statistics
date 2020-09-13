@@ -3,27 +3,27 @@ namespace CodingMs\ViewStatistics\Domain\Model;
 
 /***************************************************************
  *
- *  Copyright notice
+ * Copyright notice
  *
- *  (c) 2017 Natalia Postnikova <natalia@postnikova.de>
+ * (c) 2020 Thomas Deuling <typo3@coding.ms>
  *
- *  All rights reserved
+ * All rights reserved
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * This script is part of the TYPO3 project. The TYPO3 project is
+ * free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
+ * The GNU General Public License can be found at
+ * http://www.gnu.org/copyleft/gpl.html.
  *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  This copyright notice MUST APPEAR in all copies of the script!
+ * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
 use GeorgRinger\News\Domain\Model\News;
@@ -31,7 +31,7 @@ use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Extbase\Domain\Model\File;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use \TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
  * Track
@@ -51,7 +51,6 @@ class Track extends AbstractEntity
 
     /**
      * @var \CodingMs\ViewStatistics\Domain\Model\FrontendUser
-     * @lazy
      */
     protected $frontendUser;
 
@@ -62,13 +61,11 @@ class Track extends AbstractEntity
 
     /**
      * @var \CodingMs\ViewStatistics\Domain\Model\Page
-     * @lazy
      */
     protected $page;
 
     /**
      * @var \CodingMs\ViewStatistics\Domain\Model\Page
-     * @lazy
      */
     protected $rootPage;
 
@@ -305,22 +302,6 @@ class Track extends AbstractEntity
     }
 
     /**
-     * @return bool
-     */
-    public function getIsDetailPage()
-    {
-        //if(isset($this->news) || isset($this->indication) || isset($this->illness)) {
-        //    return true;
-        //}
-        return false;
-    }
-
-    public function getNotDetailPage()
-    {
-        return !$this->getIsDetailPage();
-    }
-
-    /**
      * @return int
      */
     public function getObjectUid()
@@ -368,13 +349,16 @@ class Track extends AbstractEntity
             /** @var News $object */
             $object = $repository->findByIdentifier($objectUid);
         }
-        if($objectType == 'tx_news_domain_model_news') {
+        if($objectType === 'tx_news_domain_model_news') {
             /** @var \TYPO3\CMS\Core\Resource\FileRepository $repository */
             $repository = $objectManager->get(\GeorgRinger\News\Domain\Repository\NewsDefaultRepository::class);
             /** @var File $object */
             $object = $repository->findByIdentifier($objectUid);
         }
 
+        /**
+         * @todo refactor
+         */
 
         return $object;
     }

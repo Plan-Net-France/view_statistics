@@ -1,19 +1,19 @@
 config.tx_extbase.persistence.classes {
-    CodingMs\ViewStatistics\Domain\Model\Page {
-        mapping {
-            tableName = pages
-        }
-    }
-    CodingMs\ViewStatistics\Domain\Model\FrontendUser {
-        mapping {
-            tableName = fe_users
-        }
-    }
-    CodingMs\ViewStatistics\Domain\Model\Track {
-        mapping {
-            columns.crdate.mapOnProperty = creationDate
-        }
-    }
+	CodingMs\ViewStatistics\Domain\Model\Page {
+		mapping {
+			tableName = pages
+		}
+	}
+	CodingMs\ViewStatistics\Domain\Model\FrontendUser {
+		mapping {
+			tableName = fe_users
+		}
+	}
+	CodingMs\ViewStatistics\Domain\Model\Track {
+		mapping {
+			columns.crdate.mapOnProperty = creationDate
+		}
+	}
 }
 
 
@@ -61,6 +61,16 @@ plugin.tx_viewstatistics {
 				repository = CodingMs\Portfolios\Domain\Repository\PortfolioRepository
 				# Extension key
 				extensionKey = portfolios
+			}
+			tx_openimmo_domain_model_immobilie {
+				# Label for select-boxes, table-header, ..
+				label = Immobilie
+				# Database field for title string
+				field = objekttitel
+				# Class of Repository
+				repository = CodingMs\Openimmo\Domain\Repository\ImmobilieRepository
+				# Extension key
+				extensionKey = openimmo
 			}
 		}
 
@@ -119,6 +129,17 @@ plugin.tx_viewstatistics {
 					table = tx_portfolios_domain_model_portfolio
 					# Database field for title string
 					title = title
+				}
+			}
+			// GET: tx_openimmo_immobilie[immobilie]
+			tx_openimmo_immobilie {
+				immobilie {
+					# Label for select-boxes, table-header, ..
+					label = Immobilie
+					# Database table name
+					table = tx_openimmo_domain_model_immobilie
+					# Database field for title string
+					title = objekttitel
 				}
 			}
 

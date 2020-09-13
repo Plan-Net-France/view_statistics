@@ -2,7 +2,7 @@
 track.trackLoggedInUserData = 0
 
 # cat=basic/track/20; type=options[nonLoggedInOnly,loggedInOnly,all]; label= LLL:EXT:view_statistics/Resources/Private/Language/locallang_db.xlf:tx_viewstatistics_ext_conf_template.track_user
-track.trackUser = loggedInOnly
+track.trackUser = all
 
 # cat=basic/track/20; type=boolean; label= LLL:EXT:view_statistics/Resources/Private/Language/locallang_db.xlf:tx_viewstatistics_ext_conf_template.track_ip_address
 track.trackIpAddress = 0

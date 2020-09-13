@@ -10,25 +10,24 @@ return [
         'cruser_id' => 'cruser_id',
         'dividers2tabs' => true,
         'hideTable' => 1,
-
         'delete' => 'deleted',
         'enablecolumns' => [
         ],
         'searchFields' => 'action, frontend_user, page, ip_address,',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('view_statistics') . 'Resources/Public/Icons/iconmonstr-chart-18.svg'
+        'iconfile' => 'EXT:view_statistics/Resources/Public/Icons/iconmonstr-chart-18.svg'
     ],
     'interface' => [
         'showRecordFieldList' => 'action, frontend_user, login_duration, page, root_page, language, ip_address, request_params, request_uri, referrer, user_agent, object_uid, object_type',
     ],
     'types' => [
         '1' => ['showitem' => '
-            action, 
-            --palette--;;frontend_user_login_duration, 
-            --palette--;;page_language, 
+            action,
+            --palette--;;frontend_user_login_duration,
+            --palette--;;page_language,
             root_page,
-            ip_address, request_params, 
-            request_uri, 
-            referrer, 
+            ip_address, request_params,
+            request_uri,
+            referrer,
             user_agent,
             --palette--;;object_uid_object_type
         '],
@@ -148,6 +147,7 @@ return [
                 'type' => 'text',
                 'cols' => '40',
                 'rows' => '3',
+                'readOnly' => 1,
             ],
         ],
         'request_uri' => [

@@ -4,33 +4,36 @@ namespace CodingMs\ViewStatistics\Controller;
 
 /***************************************************************
  *
- *  Copyright notice
+ * Copyright notice
  *
- *  (c) 2017 Natalia Postnikova <natalia@postnikova.de>
+ * (c) 2020 Thomas Deuling <typo3@coding.ms>
  *
- *  All rights reserved
+ * All rights reserved
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * This script is part of the TYPO3 project. The TYPO3 project is
+ * free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
+ * The GNU General Public License can be found at
+ * http://www.gnu.org/copyleft/gpl.html.
  *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  This copyright notice MUST APPEAR in all copies of the script!
+ * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
 use CodingMs\ViewStatistics\Domain\Model\FrontendUser;
 use CodingMs\ViewStatistics\Domain\Repository\FrontendUserRepository;
+use CodingMs\ViewStatistics\Domain\Repository\TrackRepository;
+use CodingMs\ViewStatistics\Service\ExportService;
 use CodingMs\ViewStatistics\Utility\AuthorizationUtility;
 use CodingMs\ViewStatistics\Utility\DataTransformer;
+use DateTime;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -43,8 +46,9 @@ use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use \CodingMs\ViewStatistics\Service\ObjectService;
-use \CodingMs\ViewStatistics\Domain\Repository\PageRepository;
+use CodingMs\ViewStatistics\Service\ObjectService;
+use CodingMs\ViewStatistics\Domain\Repository\PageRepository;
+use TYPO3\CMS\Extbase\Validation\Error;
 
 /**
  * TrackController
@@ -53,10 +57,17 @@ class TrackController extends BackendActionController
 {
 
     /**
-     * @var \CodingMs\ViewStatistics\Domain\Repository\TrackRepository
-     * @inject
+     * @var TrackRepository
      */
-    protected $trackRepository = NULL;
+    protected $trackRepository = null;
+
+    /**
+     * @param TrackRepository $trackRepository
+     */
+    public function injectTrackRepository(TrackRepository $trackRepository)
+    {
+        $this->trackRepository = $trackRepository;
+    }
 
     /**
      * @var array
@@ -64,10 +75,17 @@ class TrackController extends BackendActionController
     protected $filter;
 
     /**
-     * @var \CodingMs\ViewStatistics\Service\ExportService
-     * @inject
+     * @var ExportService
      */
     protected $exportService = null;
+
+    /**
+     * @param ExportService $exportService
+     */
+    public function injectExportService(ExportService $exportService)
+    {
+        $this->exportService = $exportService;
+    }
 
     /**
      * @var IconFactory
@@ -180,7 +198,7 @@ class TrackController extends BackendActionController
     public function listForPageAction()
     {
         $pageUid = 0;
-        /** @var \CodingMs\ViewStatistics\Domain\Repository\PageRepository $repository */
+        /** @var PageRepository $repository */
         $repository = $this->objectManager->get(PageRepository::class);
         $search = $this->processSearch();
         $this->view->assign('search', $search);
@@ -254,7 +272,7 @@ class TrackController extends BackendActionController
     {
         $userUid = 0;
         $frontendUser = null;
-        /** @var \CodingMs\ViewStatistics\Domain\Repository\FrontendUserRepository $frontendUserRepository */
+        /** @var FrontendUserRepository $frontendUserRepository */
         $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
         $search = $this->processSearch();
         $this->createButtons();
@@ -352,7 +370,6 @@ class TrackController extends BackendActionController
         if($objectUid > 0) {
             $object = $repository->findByUid($objectUid);
             if($object) {
-                //DebuggerUtility::var_dump($object);
                 $this->view->assign('object', $object);
                 //
                 // Get label
@@ -401,7 +418,7 @@ class TrackController extends BackendActionController
         if($this->request->hasArgument('submit')) {
             $currentConfig = $statisticConfig[$this->request->getArgument('config')];
 
-            if($this->request->getArgument('config') == 'pages') {
+            if($this->request->getArgument('config') === 'pages') {
                 $items = $this->trackRepository->findTopPages($currentConfig['limit'],
                     $this->filter['mindate_ts'], $this->filter['maxdate_ts']);
                 $this->view->assign('type', 'pages');
@@ -490,9 +507,9 @@ class TrackController extends BackendActionController
         $datefields = ['mindate', 'maxdate'];
         foreach ($datefields as $field) {
             if ($this->request->hasArgument($field) && !empty($this->request->getArgument($field))) {
-                $date = \DateTime::createFromFormat('d-m-Y', $this->request->getArgument($field));
+                $date = DateTime::createFromFormat('d-m-Y', $this->request->getArgument($field));
                 if ($date === false) {
-                    $errors[$field] = new \TYPO3\CMS\Extbase\Validation\Error('Invalid date', '1492512962');
+                    $errors[$field] = new Error('Invalid date', '1492512962');
                 } else {
                     $this->filter[$field] = $this->sanitizeInput($this->request->getArgument($field));
                     if ($field == 'mindate') $date->setTime(0, 0, 0);
@@ -541,7 +558,7 @@ class TrackController extends BackendActionController
     /**
      * @param $key
      * @param array $arguments
-     * @return NULL|string
+     * @return null|string
      */
     protected function translate($key, $arguments=[]) {
         return LocalizationUtility::translate($key, 'ViewStatistics', $arguments);

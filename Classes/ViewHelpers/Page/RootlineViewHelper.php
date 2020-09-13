@@ -37,7 +37,7 @@ class RootlineViewHelper extends AbstractViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('as', 'string', 'Template variable name to assign; if not specified the ViewHelper returns the variable instead.');
-        $this->registerArgument('pageUid', 'integer', 'Optional page uid to use.', false, 0);
+        $this->registerArgument('pageUid', 'int', 'Optional page uid to use.', false, 0);
     }
 
     /**
@@ -45,7 +45,7 @@ class RootlineViewHelper extends AbstractViewHelper
      */
     public function render()
     {
-        $pageUid = (integer) $this->arguments['pageUid'];
+        $pageUid = (int) $this->arguments['pageUid'];
         if (0 === $pageUid) {
             $pageUid = $GLOBALS['TSFE']->id;
         }

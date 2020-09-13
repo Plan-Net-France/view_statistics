@@ -1,44 +1,42 @@
 # View-Statistics Change-Log
 
+## 2020-xx-xx  Release of version 2.0.0
+
+*   [TASK] Database and ORM migration
+*   [TASK] ViewHelper migration
+*   [TASK] Source code clean up
+*   [TASK] Remove inject annotations
+*   [BUGFIX] Add missing label for user agent
+*   [TASK] Add configuration to track immobilien/properties from openimmo extension (realty, estate)
+*   [TASK] Replace $_EXTKEY variable by static extension key string
+*   [TASK] Add documentation files
+*   [TASK] Clean up ChangeLog file
+*   [TASK] Migration for TYPO3 9.5
+
+
+
 ## 2019-10-13  Release of version 1.0.3
 
-### 2019-10-13  Thomas Deuling  <typo3@coding.ms>
-
 *	[TASK] Add Gitlab-CI configuration.
-
-### 2018-09-14  Thomas Deuling  <typo3@coding.ms>
-
 *	[TASK] Providing a documentation about configuring own tracking objects.
-
-### 2018-08-29  Thomas Deuling  <typo3@coding.ms>
-
 *	[FEATURE] Track user agent of requests.
 
 
 
 ## 2017-11-23  Release of version 1.0.2
 
-### 2017-11-23  Thomas Deuling  <typo3@coding.ms>
-
 *	[BUGFIX] Fixing of tracking IP addresses
-
-### 2017-11-21  Thomas Deuling  <typo3@coding.ms>
-
 *	[BUGFIX] Adding group by in object SQL statement
 
 
 
 ## 2017-11-20  Release of version 1.0.1
 
-### 2017-11-20  Thomas Deuling  <typo3@coding.ms>
-
 *	[BUGFIX] Fixing sort ViewHelper
 
 
 
 ## 2017-11-19  Release of version 1.0.0
-
-### 2017-11-16  Thomas Deuling  <typo3@coding.ms>
 
 *	[FEATURE] Tracking IP-Address optionally
 *	[FEATURE] Tracking for Referrer, Request-URI and language

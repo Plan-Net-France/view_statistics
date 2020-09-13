@@ -42,7 +42,7 @@ class SortViewHelper extends AbstractViewHelper
     ];
 
     /**
-     * Registers the "as" argument for use with the
+     * Registers the "as" argument foruse with the
      * implementing ViewHelper.
      *
      * @return void
@@ -77,7 +77,7 @@ class SortViewHelper extends AbstractViewHelper
             'string',
             'Constant name from PHP for `SORT_FLAGS`: `SORT_REGULAR`, `SORT_STRING`, `SORT_NUMERIC`, ' .
             '`SORT_NATURAL`, `SORT_LOCALE_STRING` or `SORT_FLAG_CASE`. You can provide a comma seperated list or ' .
-            'array to use a combination of flags.',
+            'array touse a combination of flags.',
             false,
             'SORT_REGULAR'
         );
@@ -87,8 +87,8 @@ class SortViewHelper extends AbstractViewHelper
      * "Render" method - sorts a target list-type target. Either $array or
      * $objectStorage must be specified. If both are, ObjectStorage takes precedence.
      *
-     * Returns the same type as $subject. Ignores NULL values which would be
-     * OK to use in an f:for (empty loop as result)
+     * Returns the same type as $subject. Ignores null values which would be
+     * OK touse in an f:for (empty loop as result)
      * @return mixed
      * @throws \Exception
      */
@@ -109,7 +109,7 @@ class SortViewHelper extends AbstractViewHelper
                 /** @var QueryResultInterface $subject */
                 $sorted = $this->sortArray($subject->toArray());
             } elseif (null !== $subject) {
-                // a NULL value is respected and ignored, but any
+                // a null value is respected and ignored, but any
                 // unrecognized value other than this is considered a
                 // fatal error.
                 throw new \Exception(
@@ -182,7 +182,7 @@ class SortViewHelper extends AbstractViewHelper
     }
 
     /**
-     * Gets the value to use as sorting value from $object
+     * Gets the value touse as sorting value from $object
      *
      * @param mixed $object
      * @return mixed
@@ -214,7 +214,7 @@ class SortViewHelper extends AbstractViewHelper
         foreach ($constants as $constant) {
             if (false === in_array($constant, $this->allowedSortFlags)) {
                 throw new Exception(
-                    'The constant "' . $constant . '" you\'re trying to use as a sortFlag is not allowed. Allowed ' .
+                    'The constant "' . $constant . '" you\'re trying touse as a sortFlag is not allowed. Allowed ' .
                     'constants are: ' . implode(', ', $this->allowedSortFlags) . '.',
                     1404220538
                 );
@@ -232,7 +232,7 @@ class SortViewHelper extends AbstractViewHelper
      * @return mixed
      */
     protected function getArgumentFromArgumentsOrTagContent($argumentName) {
-        if (FALSE === $this->hasArgument($argumentName)) {
+        if (false === $this->hasArgument($argumentName)) {
             $value = $this->renderChildren();
         } else {
             $value = $this->arguments[$argumentName];
@@ -248,7 +248,7 @@ class SortViewHelper extends AbstractViewHelper
      * @return mixed
      */
     protected function getArgumentFromArgumentsOrTagContentAndConvertToArray($argumentName) {
-        if (FALSE === $this->hasArgument($argumentName)) {
+        if (false === $this->hasArgument($argumentName)) {
             $value = $this->renderChildren();
         } else {
             $value = $this->arguments[$argumentName];
@@ -295,7 +295,7 @@ class SortViewHelper extends AbstractViewHelper
     /**
      * @return mixed
      */
-    protected function renderChildrenWithVariableOrReturnInput($variable = NULL) {
+    protected function renderChildrenWithVariableOrReturnInput($variable = null) {
         $as = $this->arguments['as'];
         if (TRUE === empty($as)) {
             return $variable;
@@ -311,7 +311,7 @@ class SortViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @return mixed
      */
-    protected static function renderChildrenWithVariableOrReturnInputStatic($variable = NULL, $as, $renderingContext = NULL, $renderChildrenClosure = NULL) {
+    protected static function renderChildrenWithVariableOrReturnInputStatic($variable = null, $as, $renderingContext = null, $renderChildrenClosure = null) {
         if (TRUE === empty($as)) {
             return $variable;
         } else {

@@ -2,7 +2,35 @@
 
 namespace CodingMs\ViewStatistics\Service;
 
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+/***************************************************************
+ *
+ * Copyright notice
+ *
+ * (c) 2020 Thomas Deuling <typo3@coding.ms>
+ *
+ * All rights reserved
+ *
+ * This script is part of the TYPO3 project. The TYPO3 project is
+ * free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * The GNU General Public License can be found at
+ * http://www.gnu.org/copyleft/gpl.html.
+ *
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use PDO;
 
 /**
  * Object Service
@@ -24,7 +52,7 @@ class ObjectService
      * @return string
      */
     public static function getLabel($table, $uid, $field) {
-        if($table == 'sys_file') {
+        if($table === 'sys_file') {
             $table = 'sys_file_metadata';
         }
         $label = $table . ':' . $uid . ':' . $field;
@@ -36,9 +64,7 @@ class ObjectService
              * hidden - fe_users.disable
              * deleted
              */
-            /** @var  \TYPO3\CMS\Core\Database\DatabaseConnection $db */
-            $db = $GLOBALS['TYPO3_DB'];
-            $data = $db->exec_SELECTgetSingleRow('*', $table, 'uid=' . (int)$uid);
+            $data = BackendUtility::getRecord($table, (int)$uid);
             if(is_array($data)) {
                 // Append file description
                 if($table === 'sys_file_metadata' && $field !== 'description') {
@@ -47,9 +73,9 @@ class ObjectService
                         $description = ' (' . $description . ')';
                     }
                     $title = $data[$field] . $description;
-                    // If title empty, use file path and name
+                    // If title empty,use file path and name
                     if(trim($title) === '') {
-                        $identifier = $db->exec_SELECTgetSingleRow('identifier', 'sys_file', 'uid=' . (int)$uid);
+                        $identifier = BackendUtility::getRecord('sys_file', (int)$uid);
                         $title = $identifier['identifier'];
                     }
                     self::$cache[$table][$uid] = $title;
@@ -70,42 +96,75 @@ class ObjectService
      * @return array
      */
     public static function getItems($table, $search, $field) {
-        /** @var  \TYPO3\CMS\Core\Database\DatabaseConnection $db */
-        $db = $GLOBALS['TYPO3_DB'];
         $items = [];
         // Get objects by relation
         // So we get only records that have been already tracked!
         $objects = [];
-        $where = 'object_type=\'' . $table . '\' AND object_uid>0';
-        $trackTable = 'tx_viewstatistics_domain_model_track';
-        $res = $db->exec_SELECTquery('object_uid', $trackTable, $where, 'object_uid,crdate', 'crdate DESC', '0, 5000');
-        while (($row = $db->sql_fetch_assoc($res))) {
-            $objects[] = $row['object_uid'];
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_viewstatistics_domain_model_track');
+        $queryBuilder->select('*')->from('tx_viewstatistics_domain_model_track');
+        $queryBuilder->where(
+            $queryBuilder->expr()->gt('object_uid', '0')
+        );
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->eq(
+                'object_type',
+                $queryBuilder->createNamedParameter($table, PDO::PARAM_STR)
+            )
+        );
+        $queryBuilder->setMaxResults(5000);
+        $queryBuilder->orderBy('crdate', 'DESC');
+        $queryBuilder->groupBy('object_uid', 'crdate');
+        $result = $queryBuilder->execute();
+        while ($row = $result->fetch()) {
+            $objects[$row['object_uid']] = $row['object_uid'];
         }
-        $db->sql_free_result($res);
         //
         // Fix table name for sys_files
-        if($table == 'sys_file') {
+        if($table === 'sys_file') {
             $table = 'sys_file_metadata';
         }
         //
         // Fetch records, which were found in tracking data
-        $where = '1=1';
+        $queryBuilder = $connectionPool->getQueryBuilderForTable($table);
+        $queryBuilder->select('*')->from($table);
+        $queryBuilder->where(
+            $queryBuilder->expr()->gt('uid', '0')
+        );
         if(count($objects) > 0) {
-            $where .= ' AND uid IN (' . implode(', ', $objects) . ')';
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->in('uid', $objects)
+            );
         }
         if(trim($search) != '') {
             // Search for title and description in files
             if($table === 'sys_file_metadata') {
-                $where .= ' AND (' . $field . ' LIKE \'%' . $db->escapeStrForLike($search, $table) .  '%\'';
-                $where .= ' OR description LIKE \'%' . $db->escapeStrForLike($search, $table) .  '%\')';
+                $orWhere = $queryBuilder->orWhere(
+                    $queryBuilder->expr()->like(
+                        $field,
+                        $queryBuilder->createNamedParameter('%' . $search . '%')
+                    ),
+                    $queryBuilder->expr()->like(
+                        'description',
+                        $queryBuilder->createNamedParameter('%' . $search . '%')
+                    )
+                );
+                $queryBuilder->andWhere($orWhere);
             }
             else {
-                $where .= ' AND ' . $field . ' LIKE \'%' . $db->escapeStrForLike($search, $table) .  '%\'';
+                $queryBuilder->andWhere(
+                    $queryBuilder->expr()->like(
+                        $field,
+                        $queryBuilder->createNamedParameter('%' . $search . '%')
+                    )
+                );
             }
         }
-        $res = $db->exec_SELECTquery('*', $table, $where, '', 'crdate DESC', '0, 5000');
-        while (($row = $db->sql_fetch_assoc($res))) {
+        $queryBuilder->setMaxResults(5000);
+        $queryBuilder->orderBy('crdate', 'DESC');
+        $result = $queryBuilder->execute();
+        while ($row = $result->fetch()) {
             $item = [
                 'uid' => $row['uid'],
                 'title' => $row[$field],
@@ -117,15 +176,14 @@ class ObjectService
                 if($description !== '') {
                     $item['title'] .= ' (' . $description . ')';
                 }
-                // If title empty, use file path and name
+                // If title empty,use file path and name
                 if(trim($item['title']) === '') {
-                    $identifier = $db->exec_SELECTgetSingleRow('identifier', 'sys_file', 'uid=' . (int)$row['uid']);
+                    $identifier = BackendUtility::getRecord('sys_file', (int)$row['uid']);
                     $item['title'] = $identifier['identifier'];
                 }
             }
             $items[] = $item;
         }
-        $db->sql_free_result($res);
         return $items;
     }
 

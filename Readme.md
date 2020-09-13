@@ -1,6 +1,6 @@
 # View Statistics for TYPO3 Frontend-Users
 
-This extension inserts statistic records on each page view. This extension doesn't use cookies.
+This extension inserts statistic records on each page view. This extension doesn'tuse any cookies!
 
 **Features:**
 
@@ -26,7 +26,7 @@ This extension inserts statistic records on each page view. This extension doesn
 
 >	**Attention:**
 >
->	This extension doesn't log when you're logged in with a Backend-User the same time and call the Frontend by the same domain name. In this case use a incognito window for your Frontend-User, in order to trigger tracking!
+>	This extension doesn't log when you're logged in with a Backend-User the same time and call the Frontend by the same domain name. In this caseuse another Browser for your Frontend-User, in order to trigger tracking! An incognito Browser window might prevent this tracking as well.
 
 
 
