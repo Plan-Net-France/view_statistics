@@ -1,5 +1,7 @@
 # View-Statistics Change-Log
 
+*   [TASK] Add translation files for documentation
+
 ## 2020-xx-xx  Release of version 2.0.0
 
 *   [TASK] Database and ORM migration
