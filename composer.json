@@ -2,7 +2,6 @@
   "name": "codingms/view-statistics",
   "type": "typo3-cms-extension",
   "description": "Logs frontend actions and display them in a backend module. Track page views, News, Downloads and custom objects. Optionally track frontend user and login durations. Alternative extension for Google-Analytics, Matomo, Piwik - this extension doesntuse any cookies!",
-  "version": "1.0.3",
   "keywords": [
     "TYPO3",
     "extension",

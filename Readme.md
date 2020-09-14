@@ -1,6 +1,6 @@
 # View Statistics for TYPO3 Frontend-Users
 
-This extension inserts statistic records on each page view. This extension doesn'tuse any cookies!
+This extension inserts statistic records on each page view. This extension doesn't use any cookies!
 
 **Features:**
 
@@ -22,11 +22,12 @@ This extension inserts statistic records on each page view. This extension doesn
     *   Displaying News (EXT:news)
     *   Downloading Files (EXT:downloadmanager with type restricted)
     *   Products (EXT:shop)
+    *   Realty/Properties (EXT:openimmo)
     *   Configure your own object by TypoScript
 
 >	**Attention:**
 >
->	This extension doesn't log when you're logged in with a Backend-User the same time and call the Frontend by the same domain name. In this caseuse another Browser for your Frontend-User, in order to trigger tracking! An incognito Browser window might prevent this tracking as well.
+>	This extension doesn't log when you're logged in with a Backend-User the same time and call the Frontend by the same domain name. In this case use another Browser for your Frontend-User, in order to trigger tracking! An incognito Browser window might prevent this tracking as well.
 
 
 
@@ -39,9 +40,3 @@ This extension inserts statistic records on each page view. This extension doesn
 
 [link-typo3-view-statistics-product-details]: https://www.coding.ms/products/typo3-view-statistics/ "TYPO3 View-Statistics Product details"
 [link-typo3-view-statistics-documentation]: https://www.coding.ms/documentation/typo3-view-statistics/ "TYPO3 View-Statistics Documentation"
-
-
-
-### Possible future features
-
-*   Grab more information by IP address and User-Agent

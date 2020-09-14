@@ -16,6 +16,3 @@ Im Erweiterungsmanager können in den Erweiterungseinstellungen die folgenden gl
         Hier werden ausschließlich Seitenaufrufe von eingeloggten Benutzern getrackt.
     *   **all**
         Hier werden alle Seitenaufrufe getrackt, egal on eingeloggter oder nicht eingeloggter Benutzer.
-
-
-
