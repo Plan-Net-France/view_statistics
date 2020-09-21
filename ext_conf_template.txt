@@ -1,8 +1,14 @@
-# cat=basic/track/10; type=boolean; label= LLL:EXT:view_statistics/Resources/Private/Language/locallang_db.xlf:tx_viewstatistics_ext_conf_template.track_logged_in_user_data
-track.trackLoggedInUserData = 0
-
-# cat=basic/track/20; type=options[nonLoggedInOnly,loggedInOnly,all]; label= LLL:EXT:view_statistics/Resources/Private/Language/locallang_db.xlf:tx_viewstatistics_ext_conf_template.track_user
+# cat=basic/track/10; type=options[nonLoggedInOnly,loggedInOnly,all]; label= LLL:EXT:view_statistics/Resources/Private/Language/locallang_db.xlf:tx_viewstatistics_ext_conf_template.track_user
 track.trackUser = all
 
-# cat=basic/track/20; type=boolean; label= LLL:EXT:view_statistics/Resources/Private/Language/locallang_db.xlf:tx_viewstatistics_ext_conf_template.track_ip_address
+# cat=basic/track/20; type=boolean; label= LLL:EXT:view_statistics/Resources/Private/Language/locallang_db.xlf:tx_viewstatistics_ext_conf_template.track_logged_in_user_data
+track.trackLoggedInUserData = 0
+
+# cat=basic/track/30; type=boolean; label= LLL:EXT:view_statistics/Resources/Private/Language/locallang_db.xlf:tx_viewstatistics_ext_conf_template.track_ip_address
 track.trackIpAddress = 0
+
+# cat=basic/track/40; type=boolean; label= LLL:EXT:view_statistics/Resources/Private/Language/locallang_db.xlf:tx_viewstatistics_ext_conf_template.track_user_agent
+track.userAgent = 0
+
+# cat=basic/track/50; type=boolean; label= LLL:EXT:view_statistics/Resources/Private/Language/locallang_db.xlf:tx_viewstatistics_ext_conf_template.track_login_duration
+track.loginDuration = 0

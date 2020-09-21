@@ -1,7 +1,10 @@
 # View-Statistics Change-Log
 
+*   [FEATURE] Make tracking user agents and login duration configurable in the extension settings
 *   [BUGFIX] Fix "class 'CodingMs\ViewStatistics\ViewHelpers\Format\LoginDurationViewHelper' does not have a method 'render'" for TYPO3 8
 *   [TASK] Add translation files for documentation
+
+
 
 ## 2020-xx-xx  Release of version 2.0.0
 

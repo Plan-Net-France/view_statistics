@@ -70,14 +70,20 @@
 			<!--=======================
 				Extension configuration
 				=======================-->
-			<trans-unit id="tx_viewstatistics_ext_conf_template.track_logged_in_user_data">
-				<source>Track user data from logged in user?</source>
-			</trans-unit>
 			<trans-unit id="tx_viewstatistics_ext_conf_template.track_user">
 				<source>Who should be tracked?</source>
 			</trans-unit>
+			<trans-unit id="tx_viewstatistics_ext_conf_template.track_logged_in_user_data">
+				<source>Track frontend user ID?:This setting is only active when you set "trackUser" to "all" or "loggedInOnly"</source>
+			</trans-unit>
 			<trans-unit id="tx_viewstatistics_ext_conf_template.track_ip_address">
-				<source>Track ip address?</source>
+				<source>Track IP address?</source>
+			</trans-unit>
+			<trans-unit id="tx_viewstatistics_ext_conf_template.track_user_agent">
+				<source>Track user agent?</source>
+			</trans-unit>
+			<trans-unit id="tx_viewstatistics_ext_conf_template.track_login_duration">
+				<source>Track login duration?:Attention: This may give you locking errors if you use InnoDB.</source>
 			</trans-unit>
 
 

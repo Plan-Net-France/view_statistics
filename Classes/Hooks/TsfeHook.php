@@ -55,6 +55,8 @@ class TsfeHook
         $extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['view_statistics']);
         $trackUser = $extensionConfiguration['track.']['trackUser'];
         $trackLoggedInUserData = (bool)$extensionConfiguration['track.']['trackLoggedInUserData'];
+        $trackUserAgent = (bool)$extensionConfiguration['track.']['userAgent'];
+        $trackLoginDuration = (bool)$extensionConfiguration['track.']['loginDuration'];
         //
         // Get the current page
         $pageUid = (int)$GLOBALS['TSFE']->id;
@@ -64,35 +66,29 @@ class TsfeHook
         $loginDuration = 0;
         if ($GLOBALS['TSFE']->loginUser) {
             $frontendUserUid = $GLOBALS['TSFE']->fe_user->user['uid'];
-            // Login duration
+        }
+        // Login duration
+        if ($frontendUserUid && $trackLoginDuration) {
             $loginDuration = time() - $GLOBALS['TSFE']->fe_user->user['lastlogin'];
             $this->updateLoginDuration($frontendUserUid, $loginDuration);
-
         }
         //
         // Collect tracking information
         $requestParams = serialize(['GET' => GeneralUtility::_GET(), 'POST' => GeneralUtility::_POST()]);
         $fields = [
-            'frontend_user' => $frontendUserUid,
+            'frontend_user' => ($trackLoggedInUserData) ? $frontendUserUid : 0,
             'page' => $pageUid,
             'request_params' => $requestParams,
-            'login_duration' => $loginDuration,
+            'login_duration' => ($trackLoginDuration) ? $loginDuration : 0,
             'referrer' => GeneralUtility::getIndpEnv('HTTP_REFERER'),
             'request_uri' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'),
-            'user_agent' => GeneralUtility::getIndpEnv('HTTP_USER_AGENT'),
+            'user_agent' => ($trackUserAgent) ? GeneralUtility::getIndpEnv('HTTP_USER_AGENT') : '',
             'language' => $GLOBALS['TSFE']->sys_language_uid,
             /**
              * @todo start by page with is_root=1
              */
             'root_page' => $GLOBALS['TSFE']->rootLine[0]['uid']
         ];
-        //
-        // Track data from logged in user?
-        // -> If not setted, unset data!
-        if(!$trackLoggedInUserData) {
-            $fields['frontend_user'] = 0;
-            $fields['login_duration'] = 0;
-        }
         //
         // Track logout
         //if (GeneralUtility::_GP('logintype') === 'logout') {
