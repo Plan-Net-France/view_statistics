@@ -1,8 +1,12 @@
 # Konfigurieren Sie eigene Tracking-Objekte
 
-Zum Konfigurieren Ihrer eigenen Tracking-Objekte benötigen Sie lediglich ein wenig Setup-TypoScript. Die TypoScript-Definition ist in zwei Teile unterteilt, die in die Root-Vorlage eingefügt werden müssen.
+Zum Konfigurieren Ihrer eigenen Tracking-Objekte benötigen Sie lediglich ein wenig Setup-TypoScript. Die
+TypoScript-Definition ist in zwei Teile unterteilt, die in das Root-Template eingefügt werden müssen.
 
-Zuerst haben wir die Definition des *Typs*. Die Definition *Typ* ist erforderlich, um dem Backend-Modul beizubringen, dass es ein neues Tracking-Objekt gibt. Es registriert einen Auswahlfeldeintrag und so weiter. Eine *Typ* -Definition für unsere Frage/FAQ-Erweiterung sieht folgendermaßen aus:
+Zuerst haben wir die Definition des *Typs*. Die Definition *Typ* ist erforderlich, um dem Backend-Modul beizubringen,
+dass es ein neues Tracking-Objekt gibt, es registriert z. B. einen Auswahlfeldeintrag.
+
+Eine *Typ* -Definition für unsere Frage/FAQ-Erweiterung sieht folgendermaßen aus:
 
 ```typo3_typoscript
 plugin.tx_viewstatistics.settings.types {
@@ -14,7 +18,7 @@ plugin.tx_viewstatistics.settings.types {
 		# Select boxes, Table headers, and more
 		label = Questions/FAQ
 		# This field identifier refers to the
-		# database field, the content of which 
+		# database field, the content of which
 		# is used to display tracking rows
 		# in the backend
 		field = title
@@ -31,13 +35,18 @@ plugin.tx_viewstatistics.settings.types {
 }
 ```
 
-Zweitens haben wir die *Objekt* -Definition. Die *Objekt* -Definition definiert, welche Anforderungsparameter Trackinginformationen erstellen sollen.
+Zweitens haben wir die *Objekt* -Definition. Die *Objekt* -Definition definiert, welche Anforderungsparameter
+Trackinginformationen erstellen sollen.
 
 
-Daher sehen wir uns unseren Abfrageparameter an, der für unser Beispiel wie folgt aussieht: `?tx_questions_questions[question]=1&tx_questions_questions[action]=show&cHash=fb3dd90304ba52588593187b1c8aac3d`. Der wichtige Teil für uns ist der Parameter, der die *uid* des Datensatzes enthält, den wir verfolgen möchten - dies ist `tx_questions_questions [question] = 1`.
+Daher sehen wir uns unseren Abfrageparameter an, der für unser Beispiel wie folgt aussieht:
+
+`?tx_questions_questions[question]=1&tx_questions_questions[action]=show&cHash=fb3dd90304ba52588593187b1c8aac3d`
+
+Der wichtige Teil für uns ist der Parameter, der die *uid* des Datensatzes enthält, den wir verfolgen möchten - dies
+ist `tx_questions_questions [question] = 1`.
 
 Eine *Objekt* -Definition für unsere Frage/FAQ-Erweiterung sieht folgendermaßen aus:
-
 
 ```typo3_typoscript
 plugin.tx_viewstatistics.settings.objects {
@@ -66,5 +75,5 @@ Schließlich müssen Sie sicherstellen, dass diese neue Konfiguration auch für 
 module.tx_viewstatistics < plugin.tx_viewstatistics
 ```
 
-
-Wenn Sie weitere Konfigurationsbeispiele untersuchen möchten, sehen Sie sich die Datei *ext_typoscript_setup.txt* im Rootpfad der Erweiterung view_statistics an.
+Wenn Sie weitere Konfigurationsbeispiele untersuchen möchten, sehen Sie sich die Datei
+*ext_typoscript_setup.txt* im Rootpfad der Erweiterung view_statistics an.
