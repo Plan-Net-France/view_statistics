@@ -41,6 +41,23 @@ class TsfeHook
 {
 
     /**
+     * @return array
+     */
+    public function getExtensionConfiguration()
+    {
+        // Get configuration
+        $extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['view_statistics']);
+        if (empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['view_statistics'])) {
+            $extensionConfiguration['track.']['trackUser'] = 'all';
+            $extensionConfiguration['track.']['trackLoggedInUserData'] = false;
+            $extensionConfiguration['track.']['userAgent'] = false;
+            $extensionConfiguration['track.']['loginDuration'] = false;
+            $extensionConfiguration['track.']['trackIpAddress'] = false;
+        }
+        return $extensionConfiguration;
+    }
+
+    /**
      *
      */
     public function checkDataSubmission()
@@ -52,18 +69,11 @@ class TsfeHook
         }
         //
         // Get configuration
-        $extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['view_statistics']);
-        if (empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['view_statistics'])) {
-            $trackUser = 'all';
-            $trackLoggedInUserData = false;
-            $trackUserAgent = false;
-            $trackLoginDuration = false;
-        } else {
-            $trackUser = $extensionConfiguration['track.']['trackUser'];
-            $trackLoggedInUserData = (bool)$extensionConfiguration['track.']['trackLoggedInUserData'];
-            $trackUserAgent = (bool)$extensionConfiguration['track.']['userAgent'];
-            $trackLoginDuration = (bool)$extensionConfiguration['track.']['loginDuration'];
-        }
+        $extensionConfiguration = $this->getExtensionConfiguration();
+        $trackUser = $extensionConfiguration['track.']['trackUser'];
+        $trackLoggedInUserData = (bool)$extensionConfiguration['track.']['trackLoggedInUserData'];
+        $trackUserAgent = (bool)$extensionConfiguration['track.']['userAgent'];
+        $trackLoginDuration = (bool)$extensionConfiguration['track.']['loginDuration'];
         //
         // Get the current page
         $pageUid = (int)$GLOBALS['TSFE']->id;
