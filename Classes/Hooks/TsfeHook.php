@@ -53,10 +53,17 @@ class TsfeHook
         //
         // Get configuration
         $extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['view_statistics']);
-        $trackUser = $extensionConfiguration['track.']['trackUser'];
-        $trackLoggedInUserData = (bool)$extensionConfiguration['track.']['trackLoggedInUserData'];
-        $trackUserAgent = (bool)$extensionConfiguration['track.']['userAgent'];
-        $trackLoginDuration = (bool)$extensionConfiguration['track.']['loginDuration'];
+        if (empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['view_statistics'])) {
+            $trackUser = 'all';
+            $trackLoggedInUserData = false;
+            $trackUserAgent = false;
+            $trackLoginDuration = false;
+        } else {
+            $trackUser = $extensionConfiguration['track.']['trackUser'];
+            $trackLoggedInUserData = (bool)$extensionConfiguration['track.']['trackLoggedInUserData'];
+            $trackUserAgent = (bool)$extensionConfiguration['track.']['userAgent'];
+            $trackLoginDuration = (bool)$extensionConfiguration['track.']['loginDuration'];
+        }
         //
         // Get the current page
         $pageUid = (int)$GLOBALS['TSFE']->id;
