@@ -1,26 +1,23 @@
 # View-Statistics Change-Log
 
+## 2020-10-08  Release of version 2.0.0
+
+*   [TASK] Migrate the extension for TYPO3 9.5
 *   [!!!][TASK] Increase length of IP field in the database to accept IPv6 addresses. This changes the database structure.
 *   [FEATURE] Make tracking user agents and login duration configurable in the extension settings
 *   [BUGFIX] Fix "class 'CodingMs\ViewStatistics\ViewHelpers\Format\LoginDurationViewHelper' does not have a method 'render'" for TYPO3 8
-*   [TASK] Add translation files for documentation
 *   [BUGFIX] Fix path to JavaScript file
+*   [BUGFIX] Add missing label for user agent
+*   [TASK] Add translation files for documentation
 *   [TASK] Set default values if no extension settings exist
-
-
-
-## 2020-xx-xx  Release of version 2.0.0
-
 *   [TASK] Database and ORM migration
 *   [TASK] ViewHelper migration
 *   [TASK] Source code clean up
 *   [TASK] Remove inject annotations
-*   [BUGFIX] Add missing label for user agent
 *   [TASK] Add configuration to track immobilien/properties from openimmo extension (realty, estate)
 *   [TASK] Replace $_EXTKEY variable by static extension key string
 *   [TASK] Add documentation files
 *   [TASK] Clean up ChangeLog file
-*   [TASK] Migration for TYPO3 9.5
 
 
 
