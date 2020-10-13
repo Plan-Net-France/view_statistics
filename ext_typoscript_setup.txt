@@ -20,6 +20,8 @@ config.tx_extbase.persistence.classes {
 plugin.tx_viewstatistics {
 	settings {
 
+		defaulttype = sys_file
+
 		# This is the type to object configuration
 		types {
 			sys_file {
