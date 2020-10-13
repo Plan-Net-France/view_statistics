@@ -14,7 +14,6 @@ CREATE TABLE tx_viewstatistics_domain_model_track (
 	object_uid int(11) unsigned DEFAULT '0' NOT NULL,
 	object_type varchar(255) DEFAULT '' NOT NULL,
 	ip_address varchar(46) DEFAULT '' NOT NULL,
-	request_params text,
 	request_uri varchar(4095) DEFAULT '' NOT NULL,
 	referrer varchar(4095) DEFAULT '' NOT NULL,
 	user_agent varchar(4095) DEFAULT '' NOT NULL,

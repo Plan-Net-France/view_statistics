@@ -82,11 +82,6 @@ class Track extends AbstractEntity
     /**
      * @var string
      */
-    protected $requestParams;
-
-    /**
-     * @var string
-     */
     protected $requestUri;
 
     /**
@@ -235,22 +230,6 @@ class Track extends AbstractEntity
     public function setIpAddress($ipAddress)
     {
         $this->ipAddress = $ipAddress;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRequestParams()
-    {
-        return $this->requestParams;
-    }
-
-    /**
-     * @param string $requestParams
-     */
-    public function setRequestParams($requestParams)
-    {
-        $this->requestParams = $requestParams;
     }
 
     /**

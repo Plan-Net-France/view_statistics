@@ -17,7 +17,7 @@ return [
         'iconfile' => 'EXT:view_statistics/Resources/Public/Icons/iconmonstr-chart-18.svg'
     ],
     'interface' => [
-        'showRecordFieldList' => 'action, frontend_user, login_duration, page, root_page, language, ip_address, request_params, request_uri, referrer, user_agent, object_uid, object_type',
+        'showRecordFieldList' => 'action, frontend_user, login_duration, page, root_page, language, ip_address, request_uri, referrer, user_agent, object_uid, object_type',
     ],
     'types' => [
         '1' => ['showitem' => '
@@ -25,7 +25,7 @@ return [
             --palette--;;frontend_user_login_duration,
             --palette--;;page_language,
             root_page,
-            ip_address, request_params,
+            ip_address,
             request_uri,
             referrer,
             user_agent,
@@ -137,16 +137,6 @@ return [
                 'type' => 'input',
                 'size' => 15,
                 'eval' => 'trim',
-                'readOnly' => 1,
-            ],
-        ],
-        'request_params' => [
-            'exclude' => false,
-            'label'	=> 'LLL:EXT:view_statistics/Resources/Private/Language/locallang_db.xlf:tx_viewstatistics_domain_model_track.request_params',
-            'config' => [
-                'type' => 'text',
-                'cols' => '40',
-                'rows' => '3',
                 'readOnly' => 1,
             ],
         ],

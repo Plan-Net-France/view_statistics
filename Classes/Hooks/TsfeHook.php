@@ -91,11 +91,9 @@ class TsfeHook
         }
         //
         // Collect tracking information
-        $requestParams = serialize(['GET' => GeneralUtility::_GET(), 'POST' => GeneralUtility::_POST()]);
         $fields = [
             'frontend_user' => ($trackLoggedInUserData) ? $frontendUserUid : 0,
             'page' => $pageUid,
-            'request_params' => $requestParams,
             'login_duration' => ($trackLoginDuration) ? $loginDuration : 0,
             'referrer' => GeneralUtility::getIndpEnv('HTTP_REFERER'),
             'request_uri' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'),

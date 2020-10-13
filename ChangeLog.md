@@ -1,5 +1,7 @@
 # View-Statistics Change-Log
 
+* [BUGFIX] Remove request params logging
+
 ## 2020-10-08  Release of version 2.0.0
 
 *   [TASK] Migrate the extension for TYPO3 9.5
