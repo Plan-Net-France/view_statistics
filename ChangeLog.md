@@ -1,7 +1,5 @@
 # View-Statistics Change-Log
 
-<<<<<<< HEAD
-
 ## 2020-11-17  Release of version 2.0.1
 
 Security fix - please update ASAP
