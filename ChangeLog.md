@@ -1,6 +1,13 @@
 # View-Statistics Change-Log
 
-* [BUGFIX] Remove request params logging
+
+## 2020-11-17  Release of version 2.0.1
+
+Security fix - please update ASAP
+
+*   [BUGFIX] Remove request params logging
+
+
 
 ## 2020-10-08  Release of version 2.0.0
 
