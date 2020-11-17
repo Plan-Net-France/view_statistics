@@ -335,7 +335,7 @@ class TrackController extends BackendActionController
     {
         //
         // Validate type
-        $type = 'sys_file';
+        $type = $this->settings['defaulttype'];
         $this->view->assign('typeOptions', $this->getTypeOptions(true));
         if($this->request->hasArgument('type')) {
             $type = trim($this->request->getArgument('type'));

@@ -1,5 +1,6 @@
 # View-Statistics Change-Log
 
+<<<<<<< HEAD
 
 ## 2020-11-17  Release of version 2.0.1
 
@@ -11,6 +12,7 @@ Security fix - please update ASAP
 
 ## 2020-10-08  Release of version 2.0.0
 
+*   [TASK] Move default object type to settings
 *   [TASK] Migrate the extension for TYPO3 9.5
 *   [!!!][TASK] Increase length of IP field in the database to accept IPv6 addresses. This changes the database structure.
 *   [FEATURE] Make tracking user agents and login duration configurable in the extension settings
