@@ -2,10 +2,13 @@
 
 namespace CodingMs\ViewStatistics\ViewHelpers\Be;
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
+/**
+ * Class EditLinkViewHelper
+ */
 class EditLinkViewHelper extends AbstractTagBasedViewHelper
 {
 
@@ -48,7 +51,8 @@ class EditLinkViewHelper extends AbstractTagBasedViewHelper
         $modal = $this->arguments['modal'];
         $uri = '#';
         $pageUid = (int)GeneralUtility::_GP('id');
-        $returnUrl = BackendUtility::getModuleUrl($module, GeneralUtility::_GET());
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $returnUrl = $uriBuilder->buildUriFromRoute($module, GeneralUtility::_GET());
         switch ($action) {
             case 'edit':
                 $parameter = [
@@ -64,7 +68,7 @@ class EditLinkViewHelper extends AbstractTagBasedViewHelper
                 if (trim($this->arguments['columnsOnly']) != '') {
                     $parameter['columnsOnly'] = $this->arguments['columnsOnly'];
                 }
-                $uri = BackendUtility::getModuleUrl('record_edit', $parameter);
+                $uri = $uriBuilder->buildUriFromRoute('record_edit', $parameter);
                 break;
             case 'delete':
                 $parameter = [
@@ -78,7 +82,7 @@ class EditLinkViewHelper extends AbstractTagBasedViewHelper
                         ]
                     ]
                 ];
-                $uri = BackendUtility::getModuleUrl('tce_db', $parameter);
+                $uri = $uriBuilder->buildUriFromRoute('tce_db', $parameter);
                 // Add a modal
                 if(!empty($modal)) {
                     if(isset($modal['severity'])) {
@@ -107,7 +111,7 @@ class EditLinkViewHelper extends AbstractTagBasedViewHelper
                         ]
                     ]
                 ];
-                $uri = BackendUtility::getModuleUrl('tce_db', $parameter);
+                $uri = $uriBuilder->buildUriFromRoute('tce_db', $parameter);
                 break;
             case 'show':
                 $parameter = [
@@ -121,7 +125,7 @@ class EditLinkViewHelper extends AbstractTagBasedViewHelper
                         ]
                     ]
                 ];
-                $uri = BackendUtility::getModuleUrl('tce_db', $parameter);
+                $uri = $uriBuilder->buildUriFromRoute('tce_db', $parameter);
                 break;
             case 'enable':
                 $parameter = [
@@ -135,7 +139,7 @@ class EditLinkViewHelper extends AbstractTagBasedViewHelper
                         ]
                     ]
                 ];
-                $uri = BackendUtility::getModuleUrl('tce_db', $parameter);
+                $uri = $uriBuilder->buildUriFromRoute('tce_db', $parameter);
                 break;
             case 'disable':
                 $parameter = [
@@ -149,7 +153,7 @@ class EditLinkViewHelper extends AbstractTagBasedViewHelper
                         ]
                     ]
                 ];
-                $uri = BackendUtility::getModuleUrl('tce_db', $parameter);
+                $uri = $uriBuilder->buildUriFromRoute('tce_db', $parameter);
                 break;
         }
         // Build attribute

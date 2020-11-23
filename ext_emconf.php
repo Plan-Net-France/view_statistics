@@ -29,7 +29,7 @@ $EM_CONF['view_statistics'] = [
     'title' => 'View frontend statistics',
     'description' => 'Logs frontend actions and display them in a backend module. Track page views, News, Downloads and custom objects. Optionally tracks frontend user logins and login durations. Alternative extension for Google-Analytics, Matomo, Piwik - this extension does not use any cookies! By default it does not track any personal data like IP address or even the user agent (though this can be activated optionally).',
     'category' => 'module',
-    'version' => '2.0.1',
+    'version' => '3.0.0',
     'state' => 'stable',
     'uploadfolder' => false,
     'createDirs' => '',
@@ -39,7 +39,7 @@ $EM_CONF['view_statistics'] = [
     'author_company' => '',
     'constraints' => [
         'depends' => [
-            'typo3' => '8.7.0-9.5.99',
+            'typo3' => '9.5.0-10.4.99',
         ],
         'conflicts' => [],
         'suggests' => [],

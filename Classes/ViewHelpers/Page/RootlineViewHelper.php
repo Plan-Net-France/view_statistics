@@ -9,7 +9,7 @@ namespace CodingMs\ViewStatistics\ViewHelpers\Page;
  */
 
 use CodingMs\ViewStatistics\Service\PageService;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * ViewHelper to get the rootline of a page.
@@ -40,15 +40,13 @@ class RootlineViewHelper extends AbstractViewHelper
         $this->registerArgument('pageUid', 'int', 'Optional page uid to use.', false, 0);
     }
 
-    /**
-     * @return mixed
-     */
     public function render()
     {
         $pageUid = (int) $this->arguments['pageUid'];
         if (0 === $pageUid) {
             $pageUid = $GLOBALS['TSFE']->id;
         }
+        /** @extensionScannerIgnoreLine  */
         $rootLineData = $this->pageService->getRootLine($pageUid);
         $as = $this->arguments['as'];
         // If rootline variable already exists, remove it firstly

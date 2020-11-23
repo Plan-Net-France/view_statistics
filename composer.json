@@ -11,7 +11,7 @@
   "homepage": "https://www.coding.ms",
   "require": {
     "php": ">=7.2.0",
-    "typo3/cms-core": ">=8.7.0,<9.6",
+    "typo3/cms-core": ">=9.5.0,<10.5",
     "ext-openssl": "*",
     "ext-pdo": "*"
   },

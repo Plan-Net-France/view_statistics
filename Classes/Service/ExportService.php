@@ -338,6 +338,7 @@ class ExportService
             $rootline = $this->cache['rootline'][$uid];
         } else {
             $rootlineArray = [];
+            /** @extensionScannerIgnoreLine */
             $rootlinePages = $this->pageService->getRootLine($uid, true);
             foreach ($rootlinePages as $rootlinePage) {
                 $rootlineArray[] = $rootlinePage['title'] . '[' . $rootlinePage['uid'] . ']';

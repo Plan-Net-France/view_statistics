@@ -9,14 +9,15 @@ namespace CodingMs\ViewStatistics\ViewHelpers\Iterator;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Fluid\Core\ViewHelper\Exception;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Exception;
 
 /**
  * Sorts an instance of ObjectStorage, an Iterator implementation,
@@ -102,11 +103,9 @@ class SortViewHelper extends AbstractViewHelper
             if (true === $subject instanceof ObjectStorage || true === $subject instanceof LazyObjectStorage) {
                 $sorted = $this->sortObjectStorage($subject);
             } elseif (true === $subject instanceof \Iterator) {
-                /** @var \Iterator $subject */
                 $array = iterator_to_array($subject, true);
                 $sorted = $this->sortArray($array);
             } elseif (true === $subject instanceof QueryResultInterface) {
-                /** @var QueryResultInterface $subject */
                 $sorted = $this->sortArray($subject->toArray());
             } elseif (null !== $subject) {
                 // a null value is respected and ignored, but any
@@ -166,15 +165,13 @@ class SortViewHelper extends AbstractViewHelper
      */
     protected function sortObjectStorage($storage)
     {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         /** @var ObjectStorage $temp */
-        $temp = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
+        $temp = GeneralUtility::makeInstance(ObjectStorage::class);
         foreach ($storage as $item) {
             $temp->attach($item);
         }
         $sorted = $this->sortArray($storage);
-        $storage = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
+        $storage = GeneralUtility::makeInstance(ObjectStorage::class);
         foreach ($sorted as $item) {
             $storage->attach($item);
         }
@@ -284,12 +281,8 @@ class SortViewHelper extends AbstractViewHelper
      * @return array
      */
     protected function mergeArrays($array1, $array2) {
-        if (6.2 <= (float) substr(TYPO3_version, 0, 3)) {
-            ArrayUtility::mergeRecursiveWithOverrule($array1, $array2);
-            return $array1;
-        } else {
-            return GeneralUtility::array_merge_recursive_overrule($array1, $array2);
-        }
+        ArrayUtility::mergeRecursiveWithOverrule($array1, $array2);
+        return $array1;
     }
 
     /**
@@ -307,16 +300,27 @@ class SortViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @param \TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface $renderingContext
+     * @param mixed $variable
+     * @param string $as
+     * @param \TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface $renderingContext
      * @param \Closure $renderChildrenClosure
      * @return mixed
      */
-    protected static function renderChildrenWithVariableOrReturnInputStatic($variable = null, $as, $renderingContext = null, $renderChildrenClosure = null) {
-        if (TRUE === empty($as)) {
+    protected static function renderChildrenWithVariableOrReturnInputStatic(
+        $variable,
+        $as,
+        RenderingContextInterface $renderingContext,
+        \Closure $renderChildrenClosure
+    ) {
+        if (true === empty($as)) {
             return $variable;
         } else {
-            $variables = array($as => $variable);
-            $content = static::renderChildrenWithVariablesStatic($variables, $renderingContext->getTemplateVariableContainer(), $renderChildrenClosure);
+            $variables = [$as => $variable];
+            $content = static::renderChildrenWithVariablesStatic(
+                $variables,
+                $renderingContext->getVariableProvider(),
+                $renderChildrenClosure
+            );
         }
         return $content;
     }
@@ -330,8 +334,13 @@ class SortViewHelper extends AbstractViewHelper
      * @param array $variables
      * @return mixed
      */
-    protected function renderChildrenWithVariables(array $variables) {
-        return self::renderChildrenWithVariablesStatic($variables, $this->templateVariableContainer, $this->buildRenderChildrenClosure());
+    protected function renderChildrenWithVariables(array $variables)
+    {
+        return static::renderChildrenWithVariablesStatic(
+            $variables,
+            $this->templateVariableContainer,
+            $this->buildRenderChildrenClosure()
+        );
     }
 
     /**
@@ -341,27 +350,31 @@ class SortViewHelper extends AbstractViewHelper
      * Returns the output of the renderChildren() method on $viewHelper.
      *
      * @param array $variables
-     * @param \TYPO3\CMS\Fluid\Core\ViewHelper\TemplateVariableContainer $templateVariableContainer
+     * @param VariableProviderInterface $templateVariableContainer
      * @param \Closure $renderChildrenClosure
      * @return mixed
      */
-    protected static function renderChildrenWithVariablesStatic(array $variables, $templateVariableContainer, $renderChildrenClosure) {
-        $backups = self::backupVariables($variables, $templateVariableContainer);
+    protected static function renderChildrenWithVariablesStatic(
+        array $variables,
+        $templateVariableContainer,
+        $renderChildrenClosure
+    ) {
+        $backups = static::backupVariables($variables, $templateVariableContainer);
         $content = $renderChildrenClosure();
-        self::restoreVariables($variables, $backups, $templateVariableContainer);
+        static::restoreVariables($variables, $backups, $templateVariableContainer);
         return $content;
     }
 
     /**
      * @param array $variables
-     * @param \TYPO3\CMS\Fluid\Core\ViewHelper\TemplateVariableContainer $templateVariableContainer
-     * @param \Closure $renderChildrenClosure
+     * @param VariableProviderInterface $templateVariableContainer
      * @return array
      */
-    private static function backupVariables(array $variables, $templateVariableContainer) {
-        $backups = array();
+    private static function backupVariables(array $variables, $templateVariableContainer)
+    {
+        $backups = [];
         foreach ($variables as $variableName => $variableValue) {
-            if (TRUE === $templateVariableContainer->exists($variableName)) {
+            if (true === $templateVariableContainer->exists($variableName)) {
                 $backups[$variableName] = $templateVariableContainer->get($variableName);
                 $templateVariableContainer->remove($variableName);
             }
@@ -373,13 +386,14 @@ class SortViewHelper extends AbstractViewHelper
     /**
      * @param array $variables
      * @param array $backups
-     * @param \TYPO3\CMS\Fluid\Core\ViewHelper\TemplateVariableContainer $templateVariableContainer
+     * @param VariableProviderInterface $templateVariableContainer
      * @return void
      */
-    private static function restoreVariables(array $variables, array $backups, $templateVariableContainer) {
+    private static function restoreVariables(array $variables, array $backups, $templateVariableContainer)
+    {
         foreach ($variables as $variableName => $variableValue) {
             $templateVariableContainer->remove($variableName);
-            if (TRUE === isset($backups[$variableName])) {
+            if (true === isset($backups[$variableName])) {
                 $templateVariableContainer->add($variableName, $variableValue);
             }
         }

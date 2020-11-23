@@ -27,9 +27,11 @@ namespace CodingMs\ViewStatistics\Service;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
+use \TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 /**
  * Page Service
@@ -126,11 +128,12 @@ class PageService implements SingletonInterface
         }
         $cacheKey = md5($pageUid . (int) $reverse . (int) $disableGroupAccessCheck);
         if (false === isset(static::$cachedRootlines[$cacheKey])) {
+            $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageUid);
             $pageRepository = $this->getPageRepository();
             if (true === (boolean) $disableGroupAccessCheck) {
                 $pageRepository->where_groupAccess = '';
             }
-            $rootline = $pageRepository->getRootLine($pageUid);
+            $rootline = $rootlineUtility->get();
             if (true === $reverse) {
                 $rootline = array_reverse($rootline);
             }
@@ -188,7 +191,7 @@ class PageService implements SingletonInterface
             $pageRecord = $this->getPage($pageUid);
         }
         if (-1 === (int) $languageUid) {
-            $languageUid = $GLOBALS['TSFE']->sys_language_uid;
+            $languageUid = GeneralUtility::makeInstance(Context::class)->getAspect('language')->getId();
         }
         $l18nCfg = true === isset($pageRecord['l18n_cfg']) ? $pageRecord['l18n_cfg'] : 0;
         $hideIfNotTranslated = (boolean) GeneralUtility::hideIfNotTranslated($l18nCfg);
@@ -213,6 +216,7 @@ class PageService implements SingletonInterface
         if (TYPO3_MODE === 'BE') {
             return $this->getPageRepositoryForBackendContext();
         }
+        /** @extensionScannerIgnoreLine */
         return clone $GLOBALS['TSFE']->sys_page;
     }
 
@@ -304,6 +308,7 @@ class PageService implements SingletonInterface
      */
     public function isActive($pageUid, $showAccessProtected = false)
     {
+        /** @extensionScannerIgnoreLine */
         $rootLineData = $this->getRootLine(null, false, $showAccessProtected);
         foreach ($rootLineData as $page) {
             if ((int) $page['uid'] === (int) $pageUid) {

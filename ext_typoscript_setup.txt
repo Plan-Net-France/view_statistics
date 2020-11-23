@@ -1,25 +1,5 @@
-config.tx_extbase.persistence.classes {
-	CodingMs\ViewStatistics\Domain\Model\Page {
-		mapping {
-			tableName = pages
-		}
-	}
-	CodingMs\ViewStatistics\Domain\Model\FrontendUser {
-		mapping {
-			tableName = fe_users
-		}
-	}
-	CodingMs\ViewStatistics\Domain\Model\Track {
-		mapping {
-			columns.crdate.mapOnProperty = creationDate
-		}
-	}
-}
-
-
 plugin.tx_viewstatistics {
 	settings {
-
 		defaulttype = sys_file
 
 		# This is the type to object configuration

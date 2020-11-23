@@ -28,8 +28,8 @@ namespace CodingMs\ViewStatistics\ViewHelpers;
  ***************************************************************/
 
 use CodingMs\ViewStatistics\Service\ObjectService;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * Get a label for a tracked object

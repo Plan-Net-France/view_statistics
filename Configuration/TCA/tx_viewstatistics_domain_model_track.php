@@ -16,9 +16,6 @@ return [
         'searchFields' => 'action, frontend_user, page, ip_address,',
         'iconfile' => 'EXT:view_statistics/Resources/Public/Icons/iconmonstr-chart-18.svg'
     ],
-    'interface' => [
-        'showRecordFieldList' => 'action, frontend_user, login_duration, page, root_page, language, ip_address, request_uri, referrer, user_agent, object_uid, object_type',
-    ],
     'types' => [
         '1' => ['showitem' => '
             action,

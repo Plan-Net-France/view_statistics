@@ -34,6 +34,7 @@ use CodingMs\ViewStatistics\Service\ExportService;
 use CodingMs\ViewStatistics\Utility\AuthorizationUtility;
 use CodingMs\ViewStatistics\Utility\DataTransformer;
 use DateTime;
+use TYPO3\CMS\Backend\Routing\UriBuilder as BackUriBuilder;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -140,7 +141,7 @@ class TrackController extends BackendActionController
     {
         //
         // Get configuration
-        $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['view_statistics']);
+        $configuration = $GLOBALS['TYPO3_CONF_VARS']['EXTEXTENSIONS']['view_statistics'];
         //
         // Process filter
         $errors = $this->processFilter();
@@ -604,9 +605,9 @@ class TrackController extends BackendActionController
                     $parameter[$moduleKey]['frontendUser'] = $this->filter['frontendUser'];
                 }
                 $title = LocalizationUtility::translate('tx_viewstatistics_label.csv_export',
-                    $this->extensionName);
+                    'view_statistics');
                 $buttons[] = $buttonBar->makeLinkButton()
-                    ->setHref(BackendUtility::getModuleUrl('web_ViewStatisticsViewstatistics', $parameter))
+                    ->setHref(GeneralUtility::makeInstance(BackUriBuilder::class)->buildUriFromRoute('web_ViewStatisticsViewstatistics', $parameter))
                     ->setTitle($title)
                     ->setIcon($this->iconFactory->getIcon('actions-document-export-csv', Icon::SIZE_SMALL));
                 break;
@@ -625,9 +626,9 @@ class TrackController extends BackendActionController
                         ]
                     ];
                     $title = LocalizationUtility::translate('tx_viewstatistics_label.csv_export',
-                        $this->extensionName);
+                        'view_statistics');
                     $buttons[] = $buttonBar->makeLinkButton()
-                        ->setHref(BackendUtility::getModuleUrl('web_ViewStatisticsViewstatistics', $parameter))
+                        ->setHref(GeneralUtility::makeInstance(BackUriBuilder::class)->buildUriFromRoute('web_ViewStatisticsViewstatistics', $parameter))
                         ->setTitle($title)
                         ->setIcon($this->iconFactory->getIcon('actions-document-export-csv', Icon::SIZE_SMALL));
                 }

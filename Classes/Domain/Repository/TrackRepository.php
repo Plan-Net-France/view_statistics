@@ -28,7 +28,12 @@ namespace CodingMs\ViewStatistics\Domain\Repository;
  ***************************************************************/
 
 use CodingMs\ViewStatistics\Domain\Model\FrontendUser;
+use TYPO3\CMS\Core\DataHandling\TableColumnSubType;
+use TYPO3\CMS\Core\DataHandling\TableColumnType;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -74,6 +79,30 @@ class TrackRepository extends Repository
         $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
         $querySettings->setRespectStoragePage(false);
         $this->setDefaultQuerySettings($querySettings);
+        $this->registerInternalTimeFields();
+    }
+
+    /** @var DataMapFactory */
+    protected $dataMapFactory;
+
+    protected function registerInternalTimeFields()
+    {
+        $dataMap = $this->dataMapFactory->buildDataMap($this->objectType);
+        foreach (['crdate'] as $fieldName) {
+            if ($dataMap->getColumnMap($fieldName) !== null) {
+                continue;
+            }
+            $columnMap = GeneralUtility::makeInstance(ColumnMap::class, $fieldName, $fieldName);
+            $columnMap->setType(TableColumnType::cast('input'));
+            $columnMap->setInternalType(TableColumnSubType::cast(null));
+            $columnMap->setTypeOfRelation(ColumnMap::RELATION_NONE);
+            $dataMap->addColumnMap($columnMap);
+        }
+    }
+
+    public function injectDataMapFactory(DataMapFactory $dataMapFactory): void
+    {
+        $this->dataMapFactory = $dataMapFactory;
     }
 
     /**
